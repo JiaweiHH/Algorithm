@@ -5,29 +5,31 @@ using namespace std;
 
 template <int> class Solution;
 
+/// 贪心
 template <> class Solution<1> {
 public:
   int maxSubArray(vector<int> &nums) {
-    int res = 0, cur = 0;
+    int res = INT_MIN, cur = 0;
     for (int i = 0; i < nums.size(); ++i) {
-      cur = cur + nums[i] < 0 ? 0 : cur + nums[i];
+      cur = cur + nums[i];
       res = max(res, cur);
+      if (cur < 0)
+        cur = 0;
     }
-    int max_ele = *max_element(nums.begin(), nums.end());
-    return max_ele < 0 ? max_ele : res;
+    return res;
   }
 };
 
-/// 动态规划，dp[i] 表示以 nums[i] 结尾的最大连续和
-/// @note 也可以 dp[i] = dp[i - 1] + nums[i] > nums[i] ? dp[i - 1] + nums[i] : nums[i]，一个意思
+/// 动态规划
 template <> class Solution<2> {
 public:
   int maxSubArray(vector<int> &nums) {
-    int n = nums.size();
-    vector<int> dp(n);
+    int m = nums.size();
+    vector<int> dp(m, INT_MIN);
     dp[0] = nums[0];
-    for (int i = 1; i < n; ++i)
-      dp[i] = dp[i - 1] < 0 ? nums[i] : dp[i - 1] + nums[i];
+    for (int i = 1; i < m; ++i) {
+      dp[i] = max({dp[i], dp[i - 1] + nums[i], nums[i]});
+    }
     return *max_element(dp.begin(), dp.end());
   }
 };

@@ -1,8 +1,6 @@
 #include <vector>
 using namespace std;
 
-/// @brief 给定一个正整数 n，将其拆分为至少两个正整数的和，并使这些正整数的乘积最大化
-
 template <int> class Solution {};
 
 /// @brief 动态规划

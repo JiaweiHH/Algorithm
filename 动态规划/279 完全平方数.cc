@@ -24,6 +24,20 @@ public:
   }
 };
 
+/// 完全背包问题
+template <> class Solution<3> {
+public:
+  int numSquares(int n) {
+    vector<int> dp(n + 1, INT_MAX - 1);
+    dp[0] = 0;
+    for (int i = 1; i * i <= n; ++i) {
+      for (int j = i * i; j <= n; ++j)
+        dp[j] = min(dp[j], dp[j - i * i] + 1);
+    }
+    return dp[n];
+  }
+};
+
 /// @brief 数学定理：四平方和定力
 /// 1. 当 n = 4^k * (8m + 7) 时，n 只能被表示为四个正整数的平方和
 /// 2. 当 n != 4^k * (8m + 7) 时，至多只能被表示为 3 个正整数的平方和
