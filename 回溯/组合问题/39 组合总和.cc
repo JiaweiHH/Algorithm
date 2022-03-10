@@ -1,11 +1,9 @@
 #include <vector>
-
 using namespace std;
 
-// 给定一个数组，数组中的元素可以使用任意次，找出能够组合出总和等于 target 的所有组合
+template <int> class Solution;
 
-// DFS
-class Solution {
+template <> class Solution<1> {
 public:
   vector<vector<int>> res;
   vector<vector<int>> combinationSum(vector<int> &candidates, int target) {
@@ -30,6 +28,30 @@ public:
         tmp.pop_back();
       } else {
         break;
+      }
+    }
+  }
+};
+
+template <> class Solution<2> {
+public:
+  vector<vector<int>> res;
+  vector<vector<int>> combinationSum(vector<int> &candidates, int target) {
+    vector<int> cur;
+    dfs(candidates, cur, target, 0, 0);
+    return res;
+  }
+  void dfs(const vector<int> &candidates, vector<int> &cur, int target,
+           int index, int sum) {
+    if (sum == target) {
+      res.push_back(cur);
+      return;
+    }
+    for (int i = index; i < candidates.size(); ++i) {
+      if (sum + candidates[i] <= target) {
+        cur.push_back(candidates[i]);
+        dfs(candidates, cur, target, i, sum + candidates[i]);
+        cur.pop_back();
       }
     }
   }

@@ -1,5 +1,5 @@
-#include <vector>
 #include <queue>
+#include <vector>
 
 using namespace std;
 
@@ -12,57 +12,46 @@ struct ListNode {
   ListNode(int x, ListNode *next) : val(x), next(next) {}
 };
 
-/// @brief 给出 K 个升序的链表，合并成一个升序链表
+template <int> class Solution;
 
-/// @brief 分治，两两合并
-class Solution {
+/// 归并排序
+template <> class Solution<1> {
 public:
   ListNode *mergeKLists(vector<ListNode *> &lists) {
     if (lists.size() == 0)
       return nullptr;
     return merge(lists, 0, lists.size() - 1);
   }
-  ListNode *merge(vector<ListNode *> &lists, int start, int end) {
-    if (start == end)
-      return lists[start];
-    int mid = (start + end) / 2;
-    auto left = merge(lists, start, mid);
-    auto right = merge(lists, mid + 1, end);
-    auto res = mergeTwo(left, right);
-    return res;
+  ListNode *merge(vector<ListNode *> &lists, int l, int r) {
+    if (l == r)
+      return lists[l];
+    int mid = (l + r) / 2;
+    ListNode *left = merge(lists, l, mid);
+    ListNode *right = merge(lists, mid + 1, r);
+    return mergeTwoLists(left, right);
   }
-  // 合并两个链表
-  ListNode *mergeTwo(ListNode *left, ListNode *right) {
-    ListNode *dummy = new ListNode(0);
-    ListNode *head = dummy;
+  ListNode *mergeTwoLists(ListNode *left, ListNode *right) {
+    ListNode *dummy = new ListNode(-1), *tmp = dummy;
     while (left && right) {
       if (left->val < right->val) {
-        head->next = left;
-        head = left;
+        tmp->next = left;
         left = left->next;
       } else {
-        head->next = right;
-        head = right;
+        tmp->next = right;
         right = right->next;
       }
+      tmp = tmp->next;
     }
-    while (left) {
-      head->next = left;
-      head = left;
-      left = left->next;
-    }
-    while (right) {
-      head->next = right;
-      head = right;
-      right = right->next;
-    }
+    if (left)
+      tmp->next = left;
+    else if (right)
+      tmp->next = right;
     return dummy->next;
   }
 };
 
-/// @brief 使用小顶堆
-/// 每次从堆上 pop 出一个结点加入到输出的链表中，如果该节点还有 next 节点，那么继续加入到堆中
-class Solution {
+/// 堆排序
+template <> class Solution<2> {
 public:
   ListNode *mergeKLists(vector<ListNode *> &lists) {
     auto cmp = [](ListNode *lhs, ListNode *rhs) { return rhs->val < lhs->val; };
@@ -82,5 +71,50 @@ public:
         que.push(node->next);
     }
     return dummy->next;
+  }
+};
+
+/// 手写堆排序
+template <> class Solution<3> {
+public:
+  ListNode *mergeKLists(vector<ListNode *> &lists) {
+    int heapSize = 0;
+    vector<ListNode *> heap(1);
+    for (int i = 0; i < lists.size(); ++i) {
+      if (lists[i]) {
+        heap.push_back(lists[i]);
+        heapSize++;
+      }
+    }
+    buildMinHeap(heap, heapSize);
+    ListNode *dummy = new ListNode(-1), *head = dummy;
+    while (heapSize > 0) {
+      ListNode *node = heap[1];
+      head->next = node;
+      head = head->next;
+      if (node->next)
+        heap[1] = node->next;
+      else {
+        swap(heap[1], heap[heapSize]);
+        heapSize--;
+      }
+      minHeapify(heap, 1, heapSize);
+    }
+    return dummy->next;
+  }
+  void buildMinHeap(vector<ListNode *> &heap, int heapSize) {
+    for (int i = heapSize / 2; i > 0; --i)
+      minHeapify(heap, i, heapSize);
+  }
+  void minHeapify(vector<ListNode *> &heap, int index, int heapSize) {
+    int l = index * 2, r = index * 2 + 1, target = index;
+    if (l <= heapSize && heap[l]->val < heap[target]->val)
+      target = l;
+    if (r <= heapSize && heap[r]->val < heap[target]->val)
+      target = r;
+    if (target != index) {
+      swap(heap[index], heap[target]);
+      minHeapify(heap, target, heapSize);
+    }
   }
 };
