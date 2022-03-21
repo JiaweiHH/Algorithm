@@ -13,7 +13,10 @@ struct TreeNode {
       : val(x), left(left), right(right) {}
 };
 
-class Solution {
+template <int> class Solution;
+
+/// 使用栈的迭代
+template <> class Solution<1> {
 public:
   vector<int> inorderTraversal(TreeNode *root) {
     vector<int> res;
@@ -27,6 +30,30 @@ public:
       stk.pop();
       res.push_back(node->val);
       root = node->right;
+    }
+    return res;
+  }
+};
+
+/// Morris 遍历
+template <> class Solution<2> {
+public:
+  vector<int> inorderTraversal(TreeNode *root) {
+    vector<int> res;
+    while (root) {
+      if (root->left != nullptr) {
+        TreeNode *prev = root->left;
+        while (prev->right)
+          prev = prev->right;
+        prev->right = root;
+        // tmp 用来断开 root 和 root->left，防止之后循环遍历
+        TreeNode *tmp = root;
+        root = root->left;
+        tmp->left = nullptr;
+      } else {
+        res.push_back(root->val);
+        root = root->right;
+      }
     }
     return res;
   }

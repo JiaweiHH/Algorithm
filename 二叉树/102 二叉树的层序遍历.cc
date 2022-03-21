@@ -12,7 +12,10 @@ struct TreeNode {
       : val(x), left(left), right(right) {}
 };
 
-class Solution {
+template <int> class Solution;
+
+/// 迭代
+template <> class Solution<1> {
 public:
   vector<vector<int>> levelOrder(TreeNode *root) {
     if (root == nullptr)
@@ -42,5 +45,25 @@ public:
         res.push_back(tmp);
     }
     return res;
+  }
+};
+
+/// 递归
+template <> class Solution<2> {
+public:
+  vector<vector<int>> res;
+  vector<vector<int>> levelOrder(TreeNode *root) {
+    dfs(root, 0);
+    return res;
+  }
+  void dfs(TreeNode *root, int level) {
+    if (root == nullptr)
+      return;
+    if (res.size() == level)
+      res.push_back({root->val});
+    else
+      res[level].push_back(root->val);
+    dfs(root->left, level + 1);
+    dfs(root->right, level + 1);
   }
 };
