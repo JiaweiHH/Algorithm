@@ -21,6 +21,10 @@
 
 直接模拟即可
 
+[19.删除链表的倒数第 n 个节点](https://leetcode-cn.com/problems/remove-nth-node-from-end-of-list/)：给你一个链表，删除链表的倒数第 `n` 个节点，并返回链表的头节点。👉 [<u>删除链表的倒数第 n 个节点</u>](链表/19%20删除链表的倒数第n个节点.cc)
+
+倒数第 `n` 个节点和最后一个节点之间的距离为 `n`，因此如果我们使用两个指针，让第一个指针指向 `dummy` 节点，第二个指针位于它后面的 `n` 个位置。然后两个指针开始一起移动，这样当第二个指针移动到最后一个节点的时候，第一个指针的后继节点就是待删除的节点
+
 [21. 合并两个有序链表 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/merge-two-sorted-lists/)：合并两个有序链表。👉 [<u>合并两个有序链表</u>](链表/21%20合并两个有序链表.cc)
 
 需要掌握：迭代和递归两种方法
@@ -173,6 +177,10 @@ Node* copyRandomList(Node* head) {
    - 对于 `root`，如果 `root` 存在左子树，那么就找到左子树中最右边的那个节点，让它的 `right` 指针指向 `root`，类似二叉线索树，这样之后可以回到 `root` 并访问 `root->val`。然后让 `root = root->left` 并断开 `root` 和 `root->left` 的指针，这样做是为了防止循环遍历
    - 如果不存在左子树，那么就将 `root->val` 加入到 `res` 中，然后让 `root = root->right`
 
+[96.不同二叉搜索树](https://leetcode-cn.com/problems/unique-binary-search-trees/)：给你一个整数 `n`，求恰由 `n` 个节点组成且节点值从 `1` 到 `n` 互不相同的二叉搜索树有多少种。👉 [<u>不同二叉搜索树</u>](二叉树/96%20不同二叉搜索树.cc)
+
+动态规划。使用 `dp[i]` 表示当 `n = i` 的时候有多少种不同的二叉搜索树，我们可以将 `j = [1...i]` 作为根节点，`[1...j-1]` 作为左子树，`[j+1...i]` 作为右子树。因此以 `j` 作为根节点的二叉搜索树的种类有 `dp[j - 1] * dp[i - j]` 个，累加所有的 `j = [1...i]` 计算出 `dp[i]`
+
 [98.验证二叉搜索树](https://leetcode-cn.com/problems/validate-binary-search-tree/)：给你一个二叉树 `root` 判断它是不是一棵有效的二叉搜索树。👉 [<u>验证二叉搜索树</u>](二叉树/98%20验证二叉搜索树.cc)
 
 1. 递归（后序遍历）。需要记录左右子数的 `{min_val, left_val, isValid}`，然后和根节点进行对比，返回数据结构
@@ -192,6 +200,11 @@ if (!first)
 second = root;
 ```
 
+[101.对称二叉树](https://leetcode-cn.com/problems/symmetric-tree/)：给你一个二叉树 `root`，判断它是否轴对称。👉 [<u>对称二叉树</u>](二叉树/101%20对称二叉树.cc)
+
+- 迭代。使用一个队列 `que` 保存左右两颗子树的两个待判断的节点，每次从队列中弹出两个元素判断值是否相等，并按照如下顺序压入队列 `left->left, right->right, right->left, left->right`
+- 递归。判断左右两颗子树是不是相同的二叉树
+
 [102.二叉树的层序遍历](https://leetcode-cn.com/problems/binary-tree-level-order-traversal/)：👉 [<u>二叉树的层序遍历</u>](二叉树/102%20二叉树的层序遍历.cc)
 
 需要掌握的：
@@ -202,6 +215,8 @@ second = root;
 [103.二叉树的锯齿形层序遍历]([103. 二叉树的锯齿形层序遍历 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/binary-tree-zigzag-level-order-traversal/))：返回二叉树节点值的锯齿形层序遍历（先从左往右，再从右往左进行下一层遍历，交替执行）。👉 [<u>二叉树的锯齿形层序遍历</u>](二叉树/103%20二叉树的锯齿形层序遍历.cc)
 
 标记奇偶行，对于偶数行对该层结果进行反转即可
+
+[104.二叉树的最大深度](https://leetcode-cn.com/problems/maximum-depth-of-binary-tree/)：👉 [<u>二叉树的最大深度</u>](二叉树/104%20二叉树的最大深度.cc)
 
 [105.从前序与中序遍历序列构造二叉树](https://leetcode-cn.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/)：给出一棵二叉树的前序遍历数组和中序遍历数组，请你根据这两个数组构造二叉树。👉 [<u>从前序与中序遍历序列构造二叉树</u>](二叉树/105%20从前序与中序遍历序列构造二叉树.cc)
 
@@ -240,6 +255,24 @@ void postOrder(const vector<int> &preorder, int l_pre, int r_pre, const vector<i
   res.push_back(root);
 }
 ```
+
+[114.二叉树展开为链表](https://leetcode-cn.com/problems/flatten-binary-tree-to-linked-list/)：给你一棵二叉树 `root`，将它展开为链表，二叉树的 `right` 指针作为链表的 `next` 指针。👉 [<u>二叉树展开为链表</u>](二叉树/114%20二叉树展开为链表.cc)
+
+- 前序遍历。使用 `vector<TreeNode *> list` 记录前序遍历的所有节点，然后遍历 `list` 展开为链表。时间复杂度 `O(n)`，空间复杂度 `O(n)`
+- 前序遍历一边遍历一边展开。另一种前序遍历的写法，使用 `prev` 记录上一次遍历到的节点，然后 `prev->right = cur; prev->left = nullptr;`。时间复杂度 `O(n)`，空间复杂度 `O(n)`
+- 寻找左子树最右边的节点。记当前节点为 `cur`，每次判断 `cur->left` 是不是为空，如果不为空寻找 `cur->left` 子树最右边的节点记为 `next`；然后执行 `next->right = cur->right; cur->right = cur->left; cur->left = nullptr;`；最后更新 `cur = cur->right;`。时间复杂度 `O(n)`，空间复杂度 `O(1)`
+
+[124.二叉树中的最大路径和](https://leetcode-cn.com/problems/binary-tree-maximum-path-sum/)：路径被定义为一条从树中任意节点出发，沿父节点-子节点连接，达到任意节点的序列。同一个节点在一条路径中至多出现一次，该路径最少包含一个节点，且不一定经过根节点。给你一棵二叉树 `root`，返回其最大路径和。👉 [二叉树中的最大路径和](二叉树/124%20二叉树中的最大路径和.cc)
+
+递归。使用 `dfs(TreeNode *root)` 返回经过节点 `root` 的最大路径和，该路径可能有三种情况
+
+- 只有 `root` 一个节点
+- `root` 节点加上它的左子树
+- `root` 节点加上它的右子树
+
+并且在执行递归函数的时候更新全局最大路径值 `res = max(res, max({root->val, root->val + left, root->val + right, root->val + left + right}))`。再更新 `res` 的时候考虑了 `root->val + left + right`，但是在返回的时候没有考虑这个值，这是因为当返回到上一层函数的时候，父节点需要用到经过子节点的路径此时子节点的左右子树不能同时考虑
+
+**进阶：打印出路径。只需要更改 `dfs` 函数的返回值从 `int` 改为 `pair<vector<TreeNode *>, int>` 就可以了，然后在 `dfs` 中判断 `res` 需要更新的时候同时更新全局的最优路径**
 
 [129. 求根节点到叶节点数字之和 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/sum-root-to-leaf-numbers/)：从根节点到叶节点的路径 `1->2->3` 组成数字 123，计算所有根节点到叶子节点生成的数字之和。👉 [<u>求根节点到叶节点数字之和</u>](129%20求根节点到叶节点数字之和.cc)
 
@@ -335,18 +368,6 @@ string dfs(TreeNode *root) {
   return res;
 }
 ```
-
-[124.二叉树中的最大路径和](https://leetcode-cn.com/problems/binary-tree-maximum-path-sum/)：路径被定义为一条从树中任意节点出发，沿父节点-子节点连接，达到任意节点的序列。同一个节点在一条路径中至多出现一次，该路径最少包含一个节点，且不一定经过根节点。给你一棵二叉树 `root`，返回其最大路径和。👉 [二叉树中的最大路径和](二叉树/124%20二叉树中的最大路径和.cc)
-
-递归。使用 `dfs(TreeNode *root)` 返回经过节点 `root` 的最大路径和，该路径可能有三种情况
-
-- 只有 `root` 一个节点
-- `root` 节点加上它的左子树
-- `root` 节点加上它的右子树
-
-并且在执行递归函数的时候更新全局最大路径值 `res = max(res, max({root->val, root->val + left, root->val + right, root->val + left + right}))`。再更新 `res` 的时候考虑了 `root->val + left + right`，但是在返回的时候没有考虑这个值，这是因为当返回到上一层函数的时候，父节点需要用到经过子节点的路径此时子节点的左右子树不能同时考虑
-
-**进阶：打印出路径。只需要更改 `dfs` 函数的返回值从 `int` 改为 `pair<vector<TreeNode *>, int>` 就可以了，然后在 `dfs` 中判断 `res` 需要更新的时候同时更新全局的最优路径**
 
 [669.修剪二叉搜索树]([669. 修剪二叉搜索树 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/trim-a-binary-search-tree/))：给你一棵二叉搜索树，同时给定一个最小边界 `low` 和最大边界 `high`，删除二叉树中在这段区间之外的节点，并且需要保持现有节点的相对位置。👉 [<u>修剪二叉搜索树</u>](二叉树/669%20修剪二叉搜索树.cc)
 
@@ -1965,10 +1986,6 @@ auto match = [&](int i, int j) -> bool {
 
 [17.电话号码的字母组合](https://leetcode-cn.com/problems/letter-combinations-of-a-phone-number/)：给定一个仅包含数字 `2-9` 的字符串，返回所有它能表示的字母组合。👉 [<u>电话号码的字母组合</u>](回溯/17%20电话号码数字组合.cc)
 
-[19.删除链表的倒数第 n 个节点](https://leetcode-cn.com/problems/remove-nth-node-from-end-of-list/)：给你一个链表，删除链表的倒数第 `n` 个节点，并返回链表的头节点。👉 [<u>删除链表的倒数第 n 个节点</u>](链表/19%20删除链表的倒数第n个节点.cc)
-
-倒数第 `n` 个节点和最后一个节点之间的距离为 `n`，因此如果我们使用两个指针，让第一个指针指向 `dummy` 节点，第二个指针位于它后面的 `n` 个位置。然后两个指针开始一起移动，这样当第二个指针移动到最后一个节点的时候，第一个指针的后继节点就是待删除的节点
-
 [20.有效的括号](https://leetcode-cn.com/problems/valid-parentheses/)：给定一个字符串，判断该字符串表示的括号组合是不是有效的。👉 [<u>有效的括号</u>](hot100/20%20有效的括号.cc)，使用栈来匹配就可以了
 
 [22.括号生成](https://leetcode-cn.com/problems/generate-parentheses/)：数字 `n` 代表生成括号的对数，设计一个函数，用于能够生成所有可能的并且有效的括号组合。👉 [<u>括号生成</u>](回溯/22%20括号生成.cc)
@@ -2072,22 +2089,5 @@ public:
 1. 使用 `dp[i][j]` 表示 `matrix[i][j]` 左侧有多少个连续的 `1`（包含它自身）
 2. 然后按列遍历，对于每一列 `j` 我们在第一步中得到了 `matrix[i][j]` 左侧有多少个连续的 `1`，相当于我们知道了柱状图的高度，因此就可以转化为 **84.柱状图中最大的矩形** 使用单调栈来求出每一列上的柱状图最大矩形面积
 3. 在所有列的柱状图中求出最大的面积
-
-[96.不同二叉搜索树](https://leetcode-cn.com/problems/unique-binary-search-trees/)：给你一个整数 `n`，求恰由 `n` 个节点组成且节点值从 `1` 到 `n` 互不相同的二叉搜索树有多少种。👉 [<u>不同二叉搜索树</u>](二叉树/96%20不同二叉搜索树.cc)
-
-动态规划。使用 `dp[i]` 表示当 `n = i` 的时候有多少种不同的二叉搜索树，我们可以将 `j = [1...i]` 作为根节点，`[1...j-1]` 作为左子树，`[j+1...i]` 作为右子树。因此以 `j` 作为根节点的二叉搜索树的种类有 `dp[j - 1] * dp[i - j]` 个，累加所有的 `j = [1...i]` 计算出 `dp[i]`
-
-[101.对称二叉树](https://leetcode-cn.com/problems/symmetric-tree/)：给你一个二叉树 `root`，判断它是否轴对称。👉 [<u>对称二叉树</u>](二叉树/101%20对称二叉树.cc)
-
-- 迭代。使用一个队列 `que` 保存左右两颗子树的两个待判断的节点，每次从队列中弹出两个元素判断值是否相等，并按照如下顺序压入队列 `left->left, right->right, right->left, left->right`
-- 递归。判断左右两颗子树是不是相同的二叉树
-
-[104.二叉树的最大深度](https://leetcode-cn.com/problems/maximum-depth-of-binary-tree/)：👉 [<u>二叉树的最大深度</u>](二叉树/104%20二叉树的最大深度.cc)
-
-[114.二叉树展开为链表](https://leetcode-cn.com/problems/flatten-binary-tree-to-linked-list/)：给你一棵二叉树 `root`，将它展开为链表，二叉树的 `right` 指针作为链表的 `next` 指针。👉 [<u>二叉树展开为链表</u>](二叉树/114%20二叉树展开为链表.cc)
-
-- 前序遍历。使用 `vector<TreeNode *> list` 记录前序遍历的所有节点，然后遍历 `list` 展开为链表。时间复杂度 `O(n)`，空间复杂度 `O(n)`
-- 前序遍历一边遍历一边展开。另一种前序遍历的写法，使用 `prev` 记录上一次遍历到的节点，然后 `prev->right = cur; prev->left = nullptr;`。时间复杂度 `O(n)`，空间复杂度 `O(n)`
-- 寻找左子树最右边的节点。记当前节点为 `cur`，每次判断 `cur->left` 是不是为空，如果不为空寻找 `cur->left` 子树最右边的节点记为 `next`；然后执行 `next->right = cur->right; cur->right = cur->left; cur->left = nullptr;`；最后更新 `cur = cur->right;`。时间复杂度 `O(n)`，空间复杂度 `O(1)`
 
 [121.买卖股票的最佳时机](https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock/)：👉 [<u>买卖股票的最佳时机</u>](动态规划/股票问题/121%20买卖股票最佳时机.cc)
