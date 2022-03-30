@@ -15,11 +15,11 @@ struct TreeNode {
 
 template <int> class Solution;
 
-/// 使用栈的迭代
+/// 中序遍历按顺序保存节点
 template <> class Solution<1> {
 public:
-  vector<int> inorderTraversal(TreeNode *root) {
-    vector<int> res;
+  void recoverTree(TreeNode *root) {
+    vector<TreeNode *> vec;
     stack<TreeNode *> stk;
     while (!stk.empty() || root) {
       while (root) {
@@ -28,42 +28,32 @@ public:
       }
       TreeNode *node = stk.top();
       stk.pop();
-      res.push_back(node->val);
-      root = node->right;
+      vec.push_back(node);
+      if (node->right)
+        root = node->right;
     }
-    return res;
-  }
-};
-
-/// Morris 遍历
-template <> class Solution<2> {
-public:
-  vector<int> inorderTraversal(TreeNode *root) {
-    vector<int> res;
-    while (root) {
-      if (root->left != nullptr) {
-        TreeNode *prev = root->left;
-        while (prev->right)
-          prev = prev->right;
-        prev->right = root;
-        // tmp 用来断开 root 和 root->left，防止之后循环遍历
-        TreeNode *tmp = root;
-        root = root->left;
-        tmp->left = nullptr;
-      } else {
-        res.push_back(root->val);
-        root = root->right;
+    int l = 0, r = vec.size() - 1;
+    for (int i = 0; i < vec.size() - 1; ++i) {
+      if (vec[i]->val > vec[i + 1]->val) {
+        l = i;
+        break;
       }
     }
-    return res;
+    for (int i = vec.size() - 1; i >= 1; --i) {
+      if (vec[i]->val < vec[i - 1]->val) {
+        r = i;
+        break;
+      }
+    }
+    swap(vec[l]->val, vec[r]->val);
   }
 };
 
-/// Morris 不修改 left 指针
-template <> class Solution<3> {
+/// Morris 遍历，不需要保存中间节点
+template <> class Solution<2> {
 public:
-  vector<int> inorderTraversal(TreeNode *root) {
-    vector<int> res;
+  void recoverTree(TreeNode *root) {
+    TreeNode *prev = nullptr, *first = nullptr, *second = nullptr;
     while (root) {
       if (root->left) {
         TreeNode *node = root->left;
@@ -74,15 +64,25 @@ public:
           node->right = root;
           root = root->left;
         } else {
-          res.push_back(root->val);
           node->right = nullptr;
+          if (prev && prev->val > root->val) {
+            if (!first)
+              first = prev;
+            second = root;
+          }
+          prev = root;
           root = root->right;
         }
       } else {
-        res.push_back(root->val);
+        if (prev && prev->val > root->val) {
+          if (!first)
+            first = prev;
+          second = root;
+        }
+        prev = root;
         root = root->right;
       }
     }
-    return res;
+    swap(first->val, second->val);
   }
 };

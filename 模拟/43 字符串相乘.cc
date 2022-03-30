@@ -1,7 +1,11 @@
 #include <string>
+#include <vector>
 using namespace std;
 
-class Solution {
+template <int> class Solution;
+
+/// 直接模拟
+template <> class Solution<1> {
 public:
   string multiply(string num1, string num2) {
     if (num1 == "0" || num2 == "0")
@@ -53,5 +57,30 @@ public:
       res.push_back(tag + '0');
     reverse(res.begin(), res.end());
     return res;
+  }
+};
+
+/// 利用 vector 模拟
+template <> class Solution<2> {
+public:
+  string multiply(string num1, string num2) {
+    int m = num1.size(), n = num2.size();
+    vector<int> vec(m + n, 0);
+    for (int i = m - 1; i >= 0; --i) {
+      for (int j = n - 1; j >= 0; --j) {
+        int lhs = num1[i] - '0', rhs = num2[j] - '0';
+        vec[i + j + 1] += lhs * rhs;
+        vec[i + j] += vec[i + j + 1] / 10;
+        vec[i + j + 1] %= 10;
+      }
+    }
+    string res;
+    int i = 0;
+    while (i != vec.size() && vec[i] == 0)
+      ++i;
+    for (; i < vec.size(); ++i) {
+      res.push_back(vec[i] + '0');
+    }
+    return res.empty() ? "0" : res;
   }
 };

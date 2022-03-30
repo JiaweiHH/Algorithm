@@ -8,13 +8,24 @@
 
 [43.字符串相乘]([43. 字符串相乘 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/multiply-strings/))：给出两个字符串形式表示的整数 `num1`，`num2`，返回 `num1 * num2` 的字符串形式表示。👉 [<u>字符串相乘</u>](模拟/43%20字符串相乘.cc)
 
-- 直接模拟乘法的执行过程
+有下面两种方法可以处理
+
+- 直接模拟乘法的执行过程。时间复杂度 `O(mn + n^2)`，字符串相乘的操作需要 `mn` 次，字符串相加的操作需要 `n` 次，每次的时间复杂度是 `O(m + n)`；空间复杂度 `O(m + n)`，即存储的中间字符串的长度，该长度最长为 `m + n`
+- 利用 `vector` 来模拟，`vector[i + j + 1] += num1[i] * num2[j]; vec[i + j] += vec[i + j + 1] / 10; vec[i + j + 1] %= 10;`。即 `num1[i] * num2[j]` 保存在 `i + j + 1` 的位置上，对于超出 10 的部分进位保存到 `i + j` 的位置上。时间复杂度 `O(mn)`，空间复杂度 `O(m + n)`
+
+
 
 ## 链表
 
 [2.两数相加](https://leetcode-cn.com/problems/add-two-numbers/)：链表 `l1` 和 `l2` 以逆序的形式存储两个整数，例如 `2->4->3` 表示整数 342。返回 `l1 + l2` 的结果，结果同样用链表逆序方式表示。👉 [<u>两数相加</u>](./hot100/2%20两数相加.cc)
 
 直接模拟即可
+
+[21. 合并两个有序链表 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/merge-two-sorted-lists/)：合并两个有序链表。👉 [<u>合并两个有序链表</u>](链表/21%20合并两个有序链表.cc)
+
+需要掌握：迭代和递归两种方法
+
+如果出现重复元素怎么去重：`prev` 每次记录上一个元素的值，如果 `list1` 和 `list2` 当前值等于 `prev` 就直接让它们向后移动即可，如果和 `prev` 不想等则考虑加入 `prev`
 
 [23.合并 K 个升序链表](https://leetcode-cn.com/problems/merge-k-sorted-lists/)：给你一个链表数组，每个链表都按照升序排列，请你将所有的链表合并成一个升序链表，返回合并后的链表。👉 [<u>合并 K 个升序链表</u>](链表/23%20合并%20K%20个升序链表.cc)
 
@@ -24,6 +35,14 @@
 [206.反转链表](https://leetcode-cn.com/problems/reverse-linked-list/)：给你一个链表的头节点 `head`，请你反转链表，并返回反转后的链表。👉 [<u>反转链表</u>](链表/206%20反转链表.cc)
 
 分别使用 **迭代** 和 **递归** 实现。本题的递归写法比较简单，反转链表II 的递归写法比这道题难一些
+
+[82. 删除排序链表中的重复元素 II - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/remove-duplicates-from-sorted-list-ii/)：删除所有重复元素，重复的元素都不能出现。👉 [<u>删除排序链表中的重复元素II</u>](82%20删除排序链表中的重复元素II.cc)
+
+对比 **83题** 需要删除所有的重复元素，使用 dummy node
+
+[83. 删除排序链表中的重复元素 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/remove-duplicates-from-sorted-list/)：删除所有重复的元素，使得每个元素只出现一次。👉 [<u>删除排序链表中的重复元素</u>](链表/83%20删除排序链表中的重复元素.cc)
+
+简单题
 
 [92.反转链表II]([92. 反转链表 II - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/reverse-linked-list-ii/))：给你单链表的头指针和两个整数 `left` 和 `right`，请你反转从位置 `left` 到 `right` 的链表节点，返回反转后的链表。👉 [<u>反转链表II</u>](92%20反转链表II.cc)
 
@@ -133,13 +152,16 @@ Node* copyRandomList(Node* head) {
 3. 迭代 + 节点拆分，**时间复杂度 `O(n)`，空间复杂度 `O(1)`**。前面使用哈希的方法都有 `O(n)` 的空间复杂度，如果要求 `O(1)` 的空间复杂度则可以使用该方法。第一步首先将两个链表连接起来，按照 `A->A'->B->B'->...`；第二步遍历这个链表，`head->next->random = head->random->next; head = head->next->next`；第三步还原这两个链表
    - 本质上也是对两个链表建立连接，因为想要设置新链表的 `random` 指针必须要依赖原链表和新链表的联系
 
+[143.重排链表]([143. 重排链表 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/reorder-list/))：给你一个链表 `L: L0->L1->...->Ln-1->Ln`，请你将其重新排序，变为 `L0->Ln->L1->Ln-1->...`。👉 [<u>重排链表</u>](链表/143%20重排链表.cc)
+
+1. 首先使用快慢指针找到链表的中间节点，然后翻转链表的后半部分。然后遍历这两段链表，重新连接它们
+
 ## 树
 
-[98.验证二叉搜索树](https://leetcode-cn.com/problems/validate-binary-search-tree/)：给你一个二叉树 `root` 判断它是不是一棵有效的二叉搜索树。👉 [<u>验证二叉搜索树</u>](二叉树/98%20验证二叉搜索树.cc)
+[剑指 Offer 34. 二叉树中和为某一值的路径 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/er-cha-shu-zhong-he-wei-mou-yi-zhi-de-lu-jing-lcof/)：给你一棵二叉树 `root` 和一个目标整数 `targetSum`，找出所有从根节点到叶子节点路径总和等于 `targetSum` 的路径。👉 [<u>二叉树中和为某一值的路径</u>](剑指Offer%2934%20二叉树中和为某一值的路径.cc)
 
-1. 递归（后序遍历）。需要记录左右子数的 `{min_val, left_val, isValid}`，然后和根节点进行对比，返回数据结构
-2. 递归（中序遍历）。使用一个全局变量记录前一个节点的值，中序遍历的时候每次判断当前节点的值和前一个节点值的大小
-3. 迭代（中序遍历）。也使用一个变量记录上一个节点的值，和递归的思路大致相同
+1. 深度优先搜索，时间复杂度 `O(n^2)`，空间复杂度 `O(n)`
+2. 广度优先搜索，时间复杂度 `O(n^2)`，空间复杂度 `O(n)`
 
 [94.二叉树的中序遍历](https://leetcode-cn.com/problems/binary-tree-inorder-traversal/)：👉 [<u>二叉树的中序遍历</u>](二叉树/94%20二叉树的中序遍历.cc)
 
@@ -151,6 +173,25 @@ Node* copyRandomList(Node* head) {
    - 对于 `root`，如果 `root` 存在左子树，那么就找到左子树中最右边的那个节点，让它的 `right` 指针指向 `root`，类似二叉线索树，这样之后可以回到 `root` 并访问 `root->val`。然后让 `root = root->left` 并断开 `root` 和 `root->left` 的指针，这样做是为了防止循环遍历
    - 如果不存在左子树，那么就将 `root->val` 加入到 `res` 中，然后让 `root = root->right`
 
+[98.验证二叉搜索树](https://leetcode-cn.com/problems/validate-binary-search-tree/)：给你一个二叉树 `root` 判断它是不是一棵有效的二叉搜索树。👉 [<u>验证二叉搜索树</u>](二叉树/98%20验证二叉搜索树.cc)
+
+1. 递归（后序遍历）。需要记录左右子数的 `{min_val, left_val, isValid}`，然后和根节点进行对比，返回数据结构
+2. 递归（中序遍历）。使用一个全局变量记录前一个节点的值，中序遍历的时候每次判断当前节点的值和前一个节点值的大小
+3. 迭代（中序遍历）。也使用一个变量记录上一个节点的值，和递归的思路大致相同
+
+[99. 恢复二叉搜索树 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/recover-binary-search-tree/)：给你二叉搜索树的根节点 `root`，该树中的恰好两个节点值被错误的交换，请你在不改变树的结构的情况下，恢复这棵树。👉 [<u>恢复二叉搜索树</u>](二叉树/99%20恢复二叉搜索树.cc)
+
+1. 方法一：中序遍历，使用 `vector` 按顺序保存所有的节点，然后在数组中找到两个不按顺序的节点，交换它们的值
+2. 方法二：Morris 遍历，记录前一个遍历节点值小于当前节点值的节点，然后交换两个节点的值
+
+```c++
+/// Morris 遍历记录方法，first 记录 prev->val < root->val，中的 prev，second 记录 root
+/// 初始的时候 first 和 second 都为 nullptr
+if (!first)
+  first = prev;
+second = root;
+```
+
 [102.二叉树的层序遍历](https://leetcode-cn.com/problems/binary-tree-level-order-traversal/)：👉 [<u>二叉树的层序遍历</u>](二叉树/102%20二叉树的层序遍历.cc)
 
 需要掌握的：
@@ -161,6 +202,91 @@ Node* copyRandomList(Node* head) {
 [103.二叉树的锯齿形层序遍历]([103. 二叉树的锯齿形层序遍历 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/binary-tree-zigzag-level-order-traversal/))：返回二叉树节点值的锯齿形层序遍历（先从左往右，再从右往左进行下一层遍历，交替执行）。👉 [<u>二叉树的锯齿形层序遍历</u>](二叉树/103%20二叉树的锯齿形层序遍历.cc)
 
 标记奇偶行，对于偶数行对该层结果进行反转即可
+
+[105.从前序与中序遍历序列构造二叉树](https://leetcode-cn.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/)：给出一棵二叉树的前序遍历数组和中序遍历数组，请你根据这两个数组构造二叉树。👉 [<u>从前序与中序遍历序列构造二叉树</u>](二叉树/105%20从前序与中序遍历序列构造二叉树.cc)
+
+递归构造，首先在中序数组中找到前序数组的根节点，然后递归的构造左子树和右子树
+
+```c++
+TreeNode *buildT(const vector<int> &preorder, int l_pre, int r_pre, const vector<int> &inorder, int l_in, int r_in) {
+  if (l_pre > r_pre)
+    return nullptr;
+  TreeNode *root = new TreeNode(preorder[l_pre]);
+  auto it_in = find(inorder.begin() + l_in, inorder.begin() + r_in + 1, root->val);
+  int pos = it_in - inorder.begin();
+  int len = pos - l_in;
+  root->left = buildT(preorder, l_pre + 1, l_pre + len, inorder, l_in, pos - 1);
+  root->right = buildT(preorder, l_pre + len + 1, r_pre, inorder, pos + 1, r_in);
+  return root;
+}
+```
+
+**进阶**
+
+- 如果有重复元素怎么办：有重复元素构造出来的树不是唯一的
+- 根据前序和中序输出后序：与这道题一样的方法，先找到前序数组中根节点在中序数组的位置，然后递归的对中序数组的左子树进行处理、对中序数组的右子树进行处理、对中序数组的根节点进行处理
+
+```c++
+/// 从前序遍历和中序遍历输出后序遍历
+void postOrder(const vector<int> &preorder, int l_pre, int r_pre, const vector<int> &inorder, int l_in, int r_in) {
+  if (l_pre > r_pre)
+    return;
+  int root = preorder[l_pre];
+  auto it = find(inorder.begin() + l_in, inorder.begin() + r_in + 1, root);
+  int pos = it - inorder.begin();
+  int len = pos - l_in;
+  postOrder(preorder, l_pre + 1, l_pre + len, inorder, l_in, pos - 1);
+  postOrder(preorder, l_pre + len + 1, r_pre, inorder, pos + 1, r_in);
+  res.push_back(root);
+}
+```
+
+[129. 求根节点到叶节点数字之和 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/sum-root-to-leaf-numbers/)：从根节点到叶节点的路径 `1->2->3` 组成数字 123，计算所有根节点到叶子节点生成的数字之和。👉 [<u>求根节点到叶节点数字之和</u>](129%20求根节点到叶节点数字之和.cc)
+
+**方法一：递归**
+
+```c++
+void dfs(TreeNode *root, int cur) {
+  cur = cur * 10 + root->val;
+  if (!root->left && !root->right) {
+    res += cur;
+    return;
+  }
+  if (root->left)
+    dfs(root->left, cur);
+  if (root->right)
+    dfs(root->right, cur);
+}
+```
+
+**方法二：深搜迭代**
+
+在前序遍历的基础上进行更改，栈中保存 `pair<TreeNode *, int>`，即当前节点的指针和到当前节点为止组成的数字。从栈中弹出元素的时候更新当前数字 `cur = stk.top().second`，然后判断节点的左右指针是否都为空，如果确定是叶子节点则增加全局和。其余就是前序遍历的过程
+
+**方法三：广搜**
+
+类似深搜迭代的形式，在层序遍历的基础上，更改队列中保存的是 `pair<TreeNode *, int>` 即可
+
+[199. 二叉树的右视图 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/binary-tree-right-side-view/)：给你一个二叉树，返回从右侧能看到的节点值。👉 [<u>二叉树的右视图</u>](二叉树/199%20二叉树的右视图.cc)
+
+1. **层序遍历** 只保留每一层的最后一个元素
+2. **深搜** 按照 `root, root->right, root->left` 的顺序遍历。将当前层深度作为深搜的参数传递，如果结果集的元素小于当前层深度，说明当前层还没有被遍历到，则把当前层的结果加入结果集
+
+```c++
+vector<int> res;
+vector<int> rightSideView(TreeNode *root) {
+  dfs(root, 1);
+  return res;
+}
+void dfs(TreeNode *root, int depth) {
+  if (root == nullptr)
+    return;
+  if (res.size() < depth)
+    res.push_back(root->val);
+  dfs(root->right, depth + 1);
+  dfs(root->left, depth + 1);
+}
+```
 
 [226.翻转二叉树](https://leetcode-cn.com/problems/invert-binary-tree/)：给你一棵二叉树，翻转这棵二叉树。👉 [<u>翻转二叉树</u>](二叉树/226%20翻转二叉树.cc)
 
@@ -187,6 +313,28 @@ Node* copyRandomList(Node* head) {
   - 如果左子树为空，右子树不为空，返回右子树
   - 如果左子树不为空，右子树为空，返回左子树
   - 如果左右子树都不为空，找到右子树最左边的那个节点，将它的值赋给 `root`，然后执行 `root->right = deleteNode(root->right, node->val)`
+
+[652. 寻找重复的子树 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/find-duplicate-subtrees/)：给你一棵二叉树，返回所有重复的子树。👉 [<u>寻找重复的子树</u>](二叉树/652%20寻找重复的子树.cc)
+
+对二叉树的所有节点进行一个序列化，然后保存到一个哈希表中，如果某一个节点序列化的结果已经出现过了，就说明出现重复的子树了。序列化采用后续遍历的方式构建
+
+```c++
+unordered_map<string, int> map;
+vector<TreeNode *> vec;
+vector<TreeNode *> findDuplicateSubtrees(TreeNode *root) {
+  string tmp = dfs(root);
+  return vec;
+}
+string dfs(TreeNode *root) {
+  if (root == nullptr)
+    return "#";
+  string left = dfs(root->left), right = dfs(root->right);
+  string res = left + "," + right + "," + to_string(root->val);
+  if (map[res]++ == 1)
+    vec.push_back(root);
+  return res;
+}
+```
 
 [124.二叉树中的最大路径和](https://leetcode-cn.com/problems/binary-tree-maximum-path-sum/)：路径被定义为一条从树中任意节点出发，沿父节点-子节点连接，达到任意节点的序列。同一个节点在一条路径中至多出现一次，该路径最少包含一个节点，且不一定经过根节点。给你一棵二叉树 `root`，返回其最大路径和。👉 [二叉树中的最大路径和](二叉树/124%20二叉树中的最大路径和.cc)
 
@@ -250,6 +398,55 @@ Node* copyRandomList(Node* head) {
 2. 置换法（也类似上面的 “哈希” 方法）
    - 对于每一个数组中的元素 `x = nums[i]`，我们将其放在数组下标为 `x-1` 的位置，不断将 `nums[x - 1]` 和 `nums[i]` 置换，直到 `nums[i]` 小于 0 或者大于 `n` 或者和 `i+1` 相等
    - 遍历数组，如果 `nums[i] != i + 1` 说明 `i + 1` 这个元素没有出现，否则如果全部元素都正确的话说明 `1~n` 这些元素全都出现了，这个时候返回 `n+1`
+
+[128.最长连续序列](https://leetcode-cn.com/problems/longest-consecutive-sequence/)：给你一个未排序的数组 `nums`，找出数字连续的最长序列的长度，请你设计并实现一个时间复杂度为 `O(n)` 的算法。👉 [<u>最长连续序列</u>](哈希/128%20最长连续序列.cc)
+
+可以分别使用 `unordered_map` 和 `unordered_set` 来实现
+
+1. 使用 `unordered_map`，`map[key]` 用来表示当前 `key` 所在的序列的长度，因此对于一个新的元素 `val` 来说我们可以在 map 中找到 `val - 1` 和 `val + 1` 然后根据它们的长度插入 `map[val]` 并更新 `map[val - 1]` 和 `map[val + 1]`
+2. 使用 `unordered_set`，初始的时候将所有的元素都放入 set 中。然后遍历每个元素 val，计算以 `val` 为起点的序列的长度
+
+```c++
+/// 方法一
+unordered_map<int, int> map;
+for (int i = 0; i < nums.size(); ++i) {
+  if (!map.count(nums[i])) {
+    int left = map.count(nums[i] - 1) ? map[nums[i] - 1] : 0;
+    int right = map.count(nums[i] + 1) ? map[nums[i] + 1] : 0;
+    map[nums[i]] = left + right + 1;
+    map[nums[i] - left] = map[nums[i] + right] = left + right + 1;
+  }
+}
+
+/// 方法二，时间复杂度依旧是 O(n)，因为每个元素最多只被遍历到一次
+unordered_set<int> st;
+for (auto &val : nums)
+  st.insert(val);
+for (auto &val : nums) {
+  if (!st.count(val - 1)) {
+    int cur = val + 1;
+    int len = 1;
+    while (st.count(cur)) {
+      cur++;
+      len++;
+    }
+    res = max(res, len);
+  }
+}
+```
+
+[365. 水壶问题 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/water-and-jug-problem/)：有两个水壶的容量分别是 `jug1Capacity` 和 `jug2Capacity`，现在问能否使用这两个水壶量出 `targetCapacity` 升水，每次可以执行的操作有：装满任意一壶水、清空任意一壶水、将一壶水倒入另一壶水直到装满或者倒空。👉 [<u>水壶问题</u>](365%20水壶问题.cc)
+
+使用 dfs 搜索，保存当前两壶水剩余容量的状态，每次可以执行
+
+1. 清空第一壶水
+2. 清空第二壶水
+3. 倒满第一壶水
+4. 倒满第二壶水
+5. 将第一壶水倒入第二壶水
+6. 将第二壶水倒入第一壶水
+
+由于会出现无限递归，因此对于重复的状态需要使用哈希表去重。如果对于某个中间状态有 `remain_1 == target || remain_2 == target || remain_1 + remain_2 == target` 那么说明此时可以量取 target，返回 true
 
 ## 数组
 
@@ -324,6 +521,10 @@ Node* copyRandomList(Node* head) {
 
 1. 确定 `x` 的时候，如果 `nums[i] == nums[i - 1]` 那么跳过 `nums[i]`，因为已经在上一个 `nums[i - 1]` 计算过了
 2. 当 `x` 确定下来，寻找 `y` 和 `z` 的时候，为了避免 `[-2, 0, 0, 2, 2]` 这种情况重复添加 `[-2, 0, 2]` 三元组，当找到一个三元组的时候执行 `while (left > 0 && left < right && nums[left] == nums[left - 1]) ++left;` 和 `while (right < nums.size() - 1 && right > left && nums[right] == nums[right + 1]) --right;`
+
+[31.下一个排列](https://leetcode-cn.com/problems/next-permutation/)：给出一个整数数组 `nums`，找出 `nums` 的下一个排列。👉 [<u>下一个排列</u>](hot100/31%20下一个排列.cc)
+
+例如 `[4,5,2,6,3,1]` 的下一个排列是 `[4,5,3,1,2,6]`。我们可以首先从后往前找到第一个满足 `nums[i] < nums[i + 1]` 条件的组合，此时记下 `nums[i]` 的索引 `left = i`，并且 `[left + 1, nums.size() - 1]` 的所有元素都是降序的。然后从 `[left + 1, nums.size() - 1]` 从后往前寻找第一个满足 `nums[j] > nums[left]` 的元素，记下该元素的下标 `right = j`。之后交换 `nums[left]` 和 `nums[right]`，交换之后 `nums` 数组满足 `[left + 1, nums.size() - 1]` 是降序的，最后只需要翻转 `left` 之后的所有元素为升序即可
 
 [165.比较版本号]([165. 比较版本号 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/compare-version-numbers/))：给你两个版本号 `version1` 和 `version2`，请比较它们。👉 [<u>比较版本号</u>](双指针/165%20比较版本号.cc)
 
@@ -541,9 +742,24 @@ int findMin(vector<int>& nums) {
 
 因此，如果 `nums[i] < nums[i + 1]`，我们就向右遍历；如果 `nums[i] > nums[i + 1]`，我们就向左遍历。这样的话刚好可以用类似二分查找的方法进行遍历
 
+[1574. 删除最短的子数组使剩余数组有序 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/shortest-subarray-to-be-removed-to-make-array-sorted/)：给你一个整数数组 `arr`，请你删除一个连续的子数组（可以为空），使得剩下的元素是非递减的，请你返回最短子数组的长度。👉 [<u>删除最短的子数组使剩余数组有序</u>](二分/1574%20删除最短的子数组使剩余数组有序.cc)
+
+- 首先找到左边开始递减的位置 `left`，以及右边开始递减的位置`right`
+- 然后查找 ` arr[:left]` 在 `arr[right:]` 中出现的位置 `idx`， `idx - i - 1` 即为要删除的长度
+
 ## 贪心
 
-[135.分发糖果]([135. 分发糖果 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/candy/))：`n` 个孩子站成一排。给你一个整数数组 `ratings` 表示每个孩子的评分。你需要按照以下要求，给这些孩子分发糖果：
+[55. 跳跃游戏 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/jump-game/)：给定一个非负整数数组，最初位于数组的第一个下标，数组中的每个元素代表你在该位置可以跳跃的最大长度。判断能否到达最后一个下标。👉 [<u>跳跃游戏</u>](贪心55%20跳跃游戏.cc)
+
+使用 `right_most` 表示当前可以到达的最远距离，初始的时候为 0，`right_most = max(right_most, i + nums[i])`，并且数组的循环条件满足 `i <= right_most && i < nums.size()`
+
+时间复杂度 O(n)，空间复杂度 O(1)
+
+[56.合并区间](https://leetcode-cn.com/problems/merge-intervals/)：以数组 `intervals` 表示若干个区间的集合，请你合并所有重叠的区间，返回一个不重叠的区间数组，该数组恰好覆盖输入中的所有区间。👉 [<u>合并区间</u>](贪心/56%20合并区间.cc)
+
+对所有的区间按照开始时间排序。之后使用临时变量记录当前合并得到区间的开始位置 `start` 和结束位置 `end`，对后续的每一个区间，如果其开始位置在 `end` 之外，那么将 `{start, end}` 加入到结果集中，并创建一个新的合并区间
+
+[135. 分发糖果 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/candy/)：`n` 个孩子站成一排。给你一个整数数组 `ratings` 表示每个孩子的评分。你需要按照以下要求，给这些孩子分发糖果：
 
 - 每个孩子至少分配到一个糖果
 - 相邻两个孩子评分更高的孩子会获得更多的糖果
@@ -584,6 +800,17 @@ int findMin(vector<int>& nums) {
 > 方法二实际上还可以看成另一个问题背景，即一辆公交车上最多有多少个乘客。会议的开始时间看成一名乘客的上车时间，会议的结束时间看成是一名乘客的下车时间。同样可以使用 `{start, 1}, {end, -1}` 排序累加的方法来解决
 
 ## 搜索
+
+[46.全排列](https://leetcode-cn.com/problems/permutations/)：给定一个不包含重复数字的数组 `nums`，返回其所有可能的全排列。👉 [<u>全排列</u>](回溯/排列/46%20全排列.cc)
+
+深搜，额外使用空间来记录当前元素是否被访问过
+
+[47.全排列II](https://leetcode-cn.com/problems/permutations-ii/)：现在 `nums` 数组中包含了重复的元素，但是要求返回所有不重复的排列。👉 [<u>全排列II</u>](回溯/排列/47%20全排列II.cc)
+
+这里首先对 `nums` 数组排序，然后有两种方法可以去除重复的排列
+
+- 使用 `unordered_set` 记录当前被使用过的元素值，在后序的 `for` 循环迭代中不再使用该元素值
+- `i > 0 && nums[i] == nums[i - 1] && !visited[i - 1]` 的时候跳过该元素。说明一下 `!visited[i - 1]` 的用意，因为 `nums[i - 1]` 有可能是在上一层函数调用中被使用的元素，但是当前的 `nums[i] = nums[i - 1]` 此时是不能跳过 `nums[i]` 的，例如 `[1,1,2]`
 
 [200.岛屿数量](https://leetcode-cn.com/problems/number-of-islands/)：给你一个由 `1`（陆地） 和 `0`（水） 组成的二维网格，请你计算网格中岛屿的数量。👉 [<u>岛屿数量</u>](回溯/200%20岛屿数量.cc)
 
@@ -1624,13 +1851,6 @@ for (int i = 0; i < n; ++i) {
 
 ## 设计题
 
-[155.最小栈]([155. 最小栈 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/min-stack/))：设计一个支持 `push`，`pop`，`top` 操作，并能在常数时间内检索到最小元素的栈
-
-进阶：使用一个栈实现
-
-1. 我们可以使用两个栈，第一个栈存放元素，第二个栈存放当前元素为栈顶的时候，栈中的最小元素。这样当我们在获取栈中最小元素的时候，只需要从第二个栈中获取即可
-2. 如果要求只使用一个栈，那么在 `push` 一个元素的时候，同时也将此时栈中的最小值压入栈中
-
 [146.LRU缓存]([146. LRU 缓存 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/lru-cache/))：请你设计并实现一个满足 LRU 缓存约束的数据结构，实现 LRUCache 类：
 
 - LRUCache 以正整数作为容量 `capacity` 初始化 LRU 缓存
@@ -1644,6 +1864,13 @@ for (int i = 0; i < n; ++i) {
 
 进阶：**线程安全**、**带超时时间**
 
+[155.最小栈]([155. 最小栈 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/min-stack/))：设计一个支持 `push`，`pop`，`top` 操作，并能在常数时间内检索到最小元素的栈
+
+进阶：使用一个栈实现
+
+1. 我们可以使用两个栈，第一个栈存放元素，第二个栈存放当前元素为栈顶的时候，栈中的最小元素。这样当我们在获取栈中最小元素的时候，只需要从第二个栈中获取即可
+2. 如果要求只使用一个栈，那么在 `push` 一个元素的时候，同时也将此时栈中的最小值压入栈中
+
 [208.实现Trie(前缀树)]([208. 实现 Trie (前缀树) - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/implement-trie-prefix-tree/))：实现一棵前缀树。👉 [<u>实现Trie前缀树</u>](208%20实现Trie(前缀树).cc)
 
 每一个节点有一个 `unordered_map<char, Trie> children` 用来保存以该层为前缀的时候，下一个字符所在的指针。另外还有一个 `last` 变量来标记以该层字符为结尾的字符串是不是存在
@@ -1652,10 +1879,64 @@ for (int i = 0; i < n; ++i) {
 - 插入一个字符串 `word` 的时候也只需要沿着字典树的 `children` 不断的向下查找，如果发现某一个字符不存在则新建一个节点表示该字符
 - 查找一个前缀的时候和查找一个 `word` 是否存在于字典树中类似，只不过不需要判断最后的节点的 `last` 变量是否为 `true`
 
+[295. 数据流的中位数 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/find-median-from-data-stream/)：设计一个数据结构保存用户插入的数字，并且能够快速的返回这些数字的中位数。👉 [<u>数据流的中位数</u>](设计题/295%20数据流的中位数.cc)
+
+不能直接使用 `vector` 保存元素，然后每次在需要获取中位数的时候进行一次快速排序，这样会超时
+
+使用两个堆管理用户提供的数据，其中一个堆保存较小的一半数据、采用大顶堆，另一个堆保存较大的一半数据、采用小顶堆。这样在需要返回中位数的时候，如果元素的数量是奇数那么直接返回小顶堆的堆顶元素，否则返回小顶堆的堆顶元素和大顶堆的堆顶元素的平均值
+
+插入一个新元素 `num` 的时候有以下三种情况：
+
+1. `num < queMin.top()`，这个时候使用一个变量 `val` 记录当前 `queMin` 的堆顶元素，然后弹出该元素并把 `num` 插入 `queMin`
+2. `num > queMax.top()`，这个时候使用一个变量 `val` 记录当前 `queMax` 的堆顶元素，然后弹出该元素并把 `num` 插入 `queMax`
+3. `num >= queMin.top() && num <= queMax.top()`，记录 `val = num`，此时不做任何处理
+
+然后判断 `queMin.size()` 和 `queMax.size()`，如果 `queMin.size() > queMax.size()`，那么将 `val` 插入 `queMax`，否则的话将 `val` 插入 `queMin`
+
+`addNum` 时间复杂度：`O(logn)`，`findMedian` 时间复杂度：`O(1)`，空间复杂度：`O(n)`
+
 [297.二叉树的序列化与反序列化]([297. 二叉树的序列化与反序列化 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/serialize-and-deserialize-binary-tree/))：实现二叉树的序列化与反序列化函数。👉 [<u>二叉树的序列化与反序列化</u>](二叉树/297%20二叉树的序列化与反序列化.cc)
 
 - 序列化：按照层序的方式保存，每个节点用 `','` 分隔，如果是 `nullptr` 则使用 `'.'` 表示
 - 反序列化：利用队列，每次从队列中弹出一个元素，然后构建它的左节点和右节点
+
+[352. 将数据流变为多个不相交区间 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/data-stream-as-disjoint-intervals/)：给你一个由非负整数组成的数据流输入，请你将目前为止看到的数字总结为不相交的区间列表。👉 [<u>将数据流变为多个不相交区间</u>](设计/352%20将数据流变为多个不相交区间.cc)
+
+**方法一：使用堆来保存区间**
+
+- 使用堆来保存插入的数字，例如对于一个数字 `num`，保存为 `{num, num}`
+- 当获取不相交区间列表的时候对堆中的元素进行合并，合并的过程就是区间合并。每次从堆中弹出一个元素，并记录当前已经合并得到的区间的范围 `cur`，对于后续的每个堆中元素，如果 `val.first > cur.second` 说明该元素不能被合并进 `cur`，此时需要创建一个新的合并区间并把旧的合并区间保存到新的堆中以及结果集中
+- 使用新的堆保存后续插入的元素
+
+`addNum` 时间复杂度：`O(logn)`，即堆中插入元素的时间复杂度
+
+`getIntervals` 时间复杂度： `O(nlogn)` ，需要遍历整个堆中的元素，每次弹出一个元素都需要调整堆
+
+空间复杂度 `O(n)`
+
+**方法二：使用有序映射来保存区间**
+
+首先对于一个准备插入的 `val` 来说，总共有 5 种可能会执行的操作
+
+1. 已经存在一个区间已经完全包含了 `val`，此时不需要执行任何操作
+2. 存在一个区间 `[l, r]`，满足 `r + 1 = val`，此时该区间变为 `[l, r + 1]`
+3. 存在一个区间 `[l, r]`，满足 `l - 1 = val`，此时该区间变为 `[l - 1, r]`
+4. 存在两个区间 `[l0, r0], [l1, r1]`，满足 `val = r0 + 1, val = l1 - 1`，此时合并得到区间 `[l0, r1]`
+5. 以上情况之外，插入一个新的区间 `[val, val]`
+
+我们可以用有序映射 `map<l, r>` 来保存 `l` 到 `r` 的映射。首先在 map 中找到第一个大于 `val` 的区间 `[l1, r1]`，那么该区间前面的区间就是第一个小于等于 `val` 的区间 `[l0, r0]`
+
+1. 然后判断 `[l0, r0]` 是否包含了 `val`，即是否满足情况 1
+2. 进一步判断 `[l0, r0], [l1, r1]` 是否满足情况 4
+3. 进一步判断 `[l0, r0]` 是否满足情况 2
+4. 进一步判断 `[l1, r1]` 是否满足情况 3
+5. 否则就是情况 5
+
+`addNum` 时间复杂度：`O(logn)`，红黑树插入一个元素的时间复杂度
+
+`getIntervals` 时间复杂度：`O(n)`，遍历一遍有序映射返回所有的 `[l, r]`
+
+空间复杂度 `O(n)`
 
 ## hot100
 
@@ -1725,29 +2006,12 @@ public:
 };
 ```
 
-[31.下一个排列](https://leetcode-cn.com/problems/next-permutation/)：给出一个整数数组 `nums`，找出 `nums` 的下一个排列。👉 [<u>下一个排列</u>](hot100/31%20下一个排列.cc)
-
-例如 `[4,5,2,6,3,1]` 的下一个排列是 `[4,5,3,1,2,6]`。我们可以首先从后往前找到第一个满足 `nums[i] < nums[i + 1]` 条件的组合，此时记下 `nums[i]` 的索引 `left = i`，并且 `[left + 1, nums.size() - 1]` 的所有元素都是降序的。然后从 `[left + 1, nums.size() - 1]` 从后往前寻找第一个满足 `nums[j] > nums[left]` 的元素，记下该元素的下标 `right = j`。之后交换 `nums[left]` 和 `nums[right]`，交换之后 `nums` 数组满足 `[left + 1, nums.size() - 1]` 是降序的，最后只需要翻转 `left` 之后的所有元素为升序即可
-
 [34.在排序数组中查找元素第一个和最后一个位置](https://leetcode-cn.com/problems/find-first-and-last-position-of-element-in-sorted-array/)：给你一个按照升序排列的数组 `nums`，和一个目标值 `target`，找出给定目标值在数组中出现的第一个和最后一位置，如果不存在返回 `[-1,-1]`。👉 [<u>在排序数组中查找元素第一个和最后一个位置</u>](二分/34%20在排序数组中查找元素的第一个和最后一个位置.cc)
 
 - 当查找最左边出现的位置的时候，如果 `nums[mid] == target`，此时 `right = mid - 1`，最后返回有效的 `left`
 - 当查找最右边出现的位置的时候，如果 `nums[mid] == target`，此时 `left = mid + 1`，最后返回有效的 `right`
 
 [39.组合总和](https://leetcode-cn.com/problems/combination-sum/)：给你一个无重复元素的整数数组 `candidates` 和一个目标整数 `target`，找出 `candidates` 中可以使数字和为目标数 `target` 的所有不同组合。`candidates` 中同一个数字可以被无限选取。👉 [组合总和](回溯/组合问题/39%20组合总和.cc)
-
-[42.接雨水](https://leetcode-cn.com/problems/trapping-rain-water/)：本题的解题思路在 **单调栈——接雨水** 有记录。👉 [<u>接雨水</u>](单调栈/42%20接雨水.cc)
-
-[46.全排列](https://leetcode-cn.com/problems/permutations/)：给定一个不包含重复数字的数组 `nums`，返回其所有可能的全排列。👉 [<u>全排列</u>](回溯/排列/46%20全排列.cc)
-
-深搜，额外使用空间来记录当前元素是否被访问过
-
-[47.全排列II](https://leetcode-cn.com/problems/permutations-ii/)：现在 `nums` 数组中包含了重复的元素，但是要求返回所有不重复的排列。👉 [<u>全排列II</u>](回溯/排列/47%20全排列II.cc)
-
-这里首先对 `nums` 数组排序，然后有两种方法可以去除重复的排列
-
-- 使用 `unordered_set` 记录当前被使用过的元素值，在后序的 `for` 循环迭代中不再使用该元素值
-- `i > 0 && nums[i] == nums[i - 1] && !visited[i - 1]` 的时候跳过该元素。说明一下 `!visited[i - 1]` 的用意，因为 `nums[i - 1]` 有可能是在上一层函数调用中被使用的元素，但是当前的 `nums[i] = nums[i - 1]` 此时是不能跳过 `nums[i]` 的，例如 `[1,1,2]`
 
 [48.旋转图像](https://leetcode-cn.com/problems/rotate-image/)：给定一个 `n * n` 的矩阵，请你将矩阵旋转 90 度，必须在原地旋转不能使用另一个矩阵存储。👉 [<u>旋转图像</u>](hot100/48%20旋转图像.cc)
 
@@ -1767,8 +2031,6 @@ public:
 
 - 方法一：动态规划。记 `dp[i]` 表示从下标 `i` 出发能否到达最后一个下标，则我们只需要判断 `j = [i + 1, i + nums[i]]` 能否到达即可，如果从 `j` 出发可以到达那么就可以先从 `i` 到达 `j`，再从 `j` 到达最后一个下标。这里需要从后往前遍历 `nums` 数组
 - 方法二：贪心。从前往后遍历 `nums` 数组，并且维护一个最远可以到达的位置 `rightmost`，每次迭代的时候更新 `rightmost`，如果 `rightmost >= nums.size() - 1` 则返回 `true`，否则在循环结束的时候返回 `false`
-
-[56.合并区间](https://leetcode-cn.com/problems/merge-intervals/)：以数组 `intervals` 表示若干个区间的集合，请你合并所有重叠的区间，返回一个不重叠的区间数组，该数组恰好覆盖输入中的所有区间。👉 [<u>合并区间</u>](贪心/56%20合并区间.cc)
 
 [62.不同路径](https://leetcode-cn.com/problems/unique-paths/)：一个机器人位于 `m * n` 网格的左上角，机器人每次只能向下或者向右移动一步，到达右下角一共有多少种不同的路径。👉 [<u>不同路径</u>](动态规划/62%20不同路径.cc)
 
@@ -1822,8 +2084,6 @@ public:
 
 [104.二叉树的最大深度](https://leetcode-cn.com/problems/maximum-depth-of-binary-tree/)：👉 [<u>二叉树的最大深度</u>](二叉树/104%20二叉树的最大深度.cc)
 
-[105.从前序与中序遍历序列构造二叉树](https://leetcode-cn.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/)：👉 [<u>从前序与中序遍历序列构造二叉树</u>](二叉树/105%20从前序与中序遍历序列构造二叉树.cc)
-
 [114.二叉树展开为链表](https://leetcode-cn.com/problems/flatten-binary-tree-to-linked-list/)：给你一棵二叉树 `root`，将它展开为链表，二叉树的 `right` 指针作为链表的 `next` 指针。👉 [<u>二叉树展开为链表</u>](二叉树/114%20二叉树展开为链表.cc)
 
 - 前序遍历。使用 `vector<TreeNode *> list` 记录前序遍历的所有节点，然后遍历 `list` 展开为链表。时间复杂度 `O(n)`，空间复杂度 `O(n)`
@@ -1831,12 +2091,3 @@ public:
 - 寻找左子树最右边的节点。记当前节点为 `cur`，每次判断 `cur->left` 是不是为空，如果不为空寻找 `cur->left` 子树最右边的节点记为 `next`；然后执行 `next->right = cur->right; cur->right = cur->left; cur->left = nullptr;`；最后更新 `cur = cur->right;`。时间复杂度 `O(n)`，空间复杂度 `O(1)`
 
 [121.买卖股票的最佳时机](https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock/)：👉 [<u>买卖股票的最佳时机</u>](动态规划/股票问题/121%20买卖股票最佳时机.cc)
-
-[128.最长连续序列](https://leetcode-cn.com/problems/longest-consecutive-sequence/)：给你一个未排序的数组 `nums`，找出数字连续的最长序列的长度，请你设计并实现一个时间复杂度为 `O(n)` 的算法。👉 [<u>最长连续序列</u>](哈希/128%20最长连续序列.cc)
-
-使用数组中每个连续序列的最小值来统计连续序列的长度
-
-- 使用一个哈希表 `st` 存储数组的每一个元素
-- 遍历数组，判断 `nums[i] - 1` 是否在哈希表中。如果存在那么跳过该元素；如果不存在，则依次判断 `nums[i] + 1, nums[i] + 2, ..., nums[i] + k` 是否存在，然后更新最长序列的长度 `res`
-
-由于外层循环的时间复杂度是 `O(n)`，对于内层循环来说每个元素只会在内存循环出现一次，因此总的时间复杂度是 `O(n)`
