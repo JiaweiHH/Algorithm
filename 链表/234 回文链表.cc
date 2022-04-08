@@ -7,7 +7,10 @@ struct ListNode {
   ListNode(int x, ListNode *next) : val(x), next(next) {}
 };
 
-class Solution {
+template <int> class Solution;
+
+/// 翻转链表判断
+template <> class Solution<1> {
 public:
   bool isPalindrome(ListNode *head) {
     ListNode *slow = head, *fast = head->next;
@@ -33,5 +36,23 @@ public:
       head = tmp;
     }
     return prev;
+  }
+};
+
+/// 递归判断
+template <> class Solution<2> {
+public:
+  ListNode *node;
+  bool isPalindrome(ListNode *head) {
+    node = head;
+    return palindrome(head);
+  }
+  bool palindrome(ListNode *head) {
+    if (head == nullptr)
+      return true;
+    bool val = palindrome(head->next);
+    val = val && (node->val == head->val);
+    node = node->next;
+    return val;
   }
 };
