@@ -4,39 +4,31 @@ using namespace std;
 class Solution {
 public:
   vector<int> searchRange(vector<int> &nums, int target) {
-    int start, end;
-    start = find_first(nums, target);
-    end = find_last(nums, target);
-    return {start, end};
+    int first_idx, last_idx;
+    first_idx = first_search(nums, target);
+    last_idx = last_search(nums, target);
+    return {first_idx, last_idx};
   }
-  int find_first(const vector<int> &nums, int target) {
-    int left = 0, right = nums.size() - 1;
-    while (left <= right) {
-      int mid = (left + right) >> 1;
-      if (nums[mid] > target)
-        right = mid - 1;
-      else if (nums[mid] < target)
-        left = mid + 1;
+  int first_search(const vector<int> &nums, int target) {
+    int l = 0, r = nums.size() - 1;
+    while (l <= r) {
+      int mid = (l + r) / 2;
+      if (nums[mid] >= target)
+        r = mid - 1;
       else
-        right = mid - 1;
+        l = mid + 1;
     }
-    if (left == nums.size() || nums[left] != target)
-      return -1;
-    return left;
+    return l == nums.size() || nums[l] != target ? -1 : l;
   }
-  int find_last(const vector<int> &nums, int target) {
-    int left = 0, right = nums.size() - 1;
-    while (left <= right) {
-      int mid = (left + right) >> 1;
+  int last_search(const vector<int> &nums, int target) {
+    int l = 0, r = nums.size() - 1;
+    while (l <= r) {
+      int mid = (l + r) / 2;
       if (nums[mid] > target)
-        right = mid - 1;
-      else if (nums[mid] < target)
-        left = mid + 1;
+        r = mid - 1;
       else
-        left = mid + 1;
+        l = mid + 1;
     }
-    if (right == -1 || nums[right] != target)
-      return -1;
-    return right;
+    return r < 0 || nums[r] != target ? -1 : r;
   }
 };

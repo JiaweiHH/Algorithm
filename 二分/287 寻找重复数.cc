@@ -7,22 +7,18 @@ template <int> class Solution;
 template <> class Solution<1> {
 public:
   int findDuplicate(vector<int> &nums) {
-    int n = nums.size() - 1;
-    int left = 1, right = n;
-    int res = -1;
-    while (left <= right) {
-      int mid = (left + right) >> 1;
+    int l = 1, r = nums.size() - 1;
+    while (l < r) {
+      int mid = (l + r) / 2;
       int cnt = 0;
       for (int i = 0; i < nums.size(); ++i)
         cnt += nums[i] <= mid;
       if (cnt <= mid)
-        left = mid + 1;
-      else {
-        right = mid - 1;
-        res = mid;
-      }
+        l = mid + 1;
+      else
+        r = mid;
     }
-    return res;
+    return l;
   }
 };
 
@@ -31,22 +27,21 @@ template <> class Solution<2> {
 public:
   int findDuplicate(vector<int> &nums) {
     int n = nums.size() - 1;
-    int res = 0, bitmax = 0;
-    int tmp = n;
+    // 找到 n 中二进制位的最高位
+    int bit_max = 0, tmp = n;
     while (tmp) {
-      tmp = tmp >> 1;
-      bitmax++;
+      ++bit_max;
+      tmp /= 2;
     }
-    for (int bit = 0; bit <= bitmax; ++bit) {
-      int x = 0, y = 0;
-      for (int i = 1; i <= n; ++i)
-        if (i & (1 << bit))
-          x++;
-      for (int i = 0; i < nums.size(); ++i)
-        if (nums[i] & (1 << bit))
-          y++;
-      if (x < y)
-        res |= (1 << bit);
+    int res = 0;
+    for (int i = 1; i <= bit_max; ++i) {
+      int cnt_1 = 0, cnt_2 = 0;
+      for (int k = 1; k <= n; ++k)
+        cnt_1 += (k >> (i - 1)) & 1 != 0 ? 1 : 0;
+      for (auto val : nums)
+        cnt_2 += (val >> (i - 1)) & 1 != 0 ? 1 : 0;
+      if (cnt_2 > cnt_1)
+        res = res | (1 << i - 1);
     }
     return res;
   }
@@ -56,19 +51,16 @@ public:
 template <> class Solution<3> {
 public:
   int findDuplicate(vector<int> &nums) {
-    int slow = 0, fast = 0;
-    while (fast != nums.size()) {
-      slow = nums[slow];
-      if (nums[fast] != nums.size())
-        fast = nums[nums[fast]];
-      if (slow == fast)
-        break;
+    int l = 0, r = nums[0];
+    while (l != r) {
+      l = nums[l];
+      r = nums[nums[r]];
     }
-    slow = 0;
-    while (nums[slow] != nums[fast]) {
-      slow = nums[slow];
-      fast = nums[fast];
+    l = 0, r = nums[r];
+    while (l != r) {
+      l = nums[l];
+      r = nums[r];
     }
-    return nums[slow];
+    return l;
   }
 };

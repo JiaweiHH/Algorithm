@@ -3,20 +3,28 @@ using namespace std;
 
 class Solution {
 public:
+  int binary_search(vector<int> &arr, int l, int r, int target) {
+    while (l <= r) {
+      int mid = (l + r) / 2;
+      if (arr[mid] >= target)
+        r = mid - 1;
+      else
+        l = mid + 1;
+    }
+    return l;
+  }
   int findLengthOfShortestSubarray(vector<int> &arr) {
-    int l = 0, r = arr.size() - 1;
-    while (l < arr.size() - 1 && arr[l] <= arr[l + 1])
+    int n = arr.size();
+    int l = 0, r = n - 1;
+    while (l + 1 < n && arr[l + 1] >= arr[l])
       ++l;
-    while (r > 0 && arr[r] >= arr[r - 1])
+    while (r - 1 >= 0 && arr[r - 1] <= arr[r])
       --r;
-    if (l >= r)
-      return 0;
     int res = r;
     for (int i = 0; i <= l; ++i) {
-      int target = arr[i];
-      int idx = lower_bound(arr.begin() + r, arr.end(), target) - arr.begin();
+      int idx = binary_search(arr, r, n - 1, arr[i]);
       res = min(res, idx - i - 1);
     }
-    return res;
+    return max(res, 0);
   }
 };
