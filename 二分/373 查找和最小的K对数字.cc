@@ -55,7 +55,6 @@ public:
     int64_t l = nums1[0] + nums2[0], r = nums1[m - 1] + nums2[n - 1];
     while (l <= r) {
       int64_t mid = l + (r - l) / 2;
-      ;
       int64_t tmp = count(mid);
       if (count(mid) >= k)
         r = mid - 1;

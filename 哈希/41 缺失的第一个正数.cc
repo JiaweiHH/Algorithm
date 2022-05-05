@@ -3,7 +3,7 @@ using namespace std;
 
 template <int> class Solution;
 
-/// 哈希
+/// 哈希1
 template <> class Solution<1> {
 public:
   int firstMissingPositive(vector<int> &nums) {
@@ -25,14 +25,18 @@ public:
   }
 };
 
-/// 置换法
+/// 哈希2
 template <> class Solution<2> {
 public:
   int firstMissingPositive(vector<int> &nums) {
     int n = nums.size();
-    for (int i = 0; i < n; ++i) {
-      while (nums[i] > 0 && nums[i] < n && nums[nums[i] - 1] != nums[i])
-        swap(nums[i], nums[nums[i] - 1]);
+    for (int i = 0; i < nums.size(); ++i) {
+      int tmp = nums[i];
+      while (tmp > 0 && tmp <= n && nums[tmp - 1] != tmp) {
+        int tmp_1 = nums[tmp - 1];
+        nums[tmp - 1] = tmp;
+        tmp = tmp_1;
+      }
     }
     for (int i = 0; i < n; ++i) {
       if (nums[i] != i + 1)

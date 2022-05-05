@@ -26,5 +26,3 @@ public:
     return r >= 0 && nums[r] == target;
   }
 };
-}
-;

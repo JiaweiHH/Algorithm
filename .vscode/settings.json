@@ -70,6 +70,11 @@
     "variant": "cpp",
     "forward_list": "cpp",
     "unordered_set": "cpp",
-    "stack": "cpp"
+    "stack": "cpp",
+    "climits": "cpp",
+    "condition_variable": "cpp",
+    "numeric": "cpp",
+    "random": "cpp",
+    "thread": "cpp"
   }
 }
