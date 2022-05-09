@@ -9,21 +9,20 @@ template <int> class Solution;
 template <> class Solution<1> {
 public:
   vector<int> maxSlidingWindow(vector<int> &nums, int k) {
-    auto cmp = [](const pair<int, int> &lhs, const pair<int, int> &rhs) {
+    auto cmp = [](pair<int, int> &lhs, pair<int, int> &rhs) {
       return lhs.first < rhs.first;
     };
-    priority_queue<pair<int, int>, vector<pair<int, int>>, decltype(cmp)> q(
+    priority_queue<pair<int, int>, vector<pair<int, int>>, decltype(cmp)> heap(
         cmp);
-    for (int i = 0; i < k; ++i)
-      q.push({nums[i], i});
     vector<int> res;
-    for (int i = k; i < nums.size(); ++i) {
-      res.push_back(q.top().first);
-      while (!q.empty() && q.top().second <= i - k)
-        q.pop();
-      q.push({nums[i], i});
+    for (int i = 0; i < nums.size(); ++i) {
+      heap.push({nums[i], i});
+      while (heap.top().second <= i - k) {
+        heap.pop();
+      }
+      if (i >= k - 1)
+        res.push_back(heap.top().first);
     }
-    res.push_back(q.top().first);
     return res;
   }
 };
@@ -88,22 +87,22 @@ public:
 template <> class Solution<3> {
 public:
   vector<int> maxSlidingWindow(vector<int> &nums, int k) {
-    deque<int> q;
+    deque<int> que;
     for (int i = 0; i < k; ++i) {
-      while (!q.empty() && nums[i] >= nums[q.back()])
-        q.pop_back();
-      q.push_back(i);
+      while (!que.empty() && nums[i] >= nums[que.back()])
+        que.pop_back();
+      que.push_back(i);
     }
     vector<int> res;
     for (int i = k; i < nums.size(); ++i) {
-      res.push_back(nums[q.front()]);
-      while (!q.empty() && q.front() <= i - k)
-        q.pop_front();
-      while (!q.empty() && nums[i] >= nums[q.back()])
-        q.pop_back();
-      q.push_back(i);
+      res.push_back(nums[que.front()]);
+      while (!que.empty() && nums[i] >= nums[que.back()])
+        que.pop_back();
+      while (!que.empty() && que.front() <= i - k)
+        que.pop_front();
+      que.push_back(i);
     }
-    res.push_back(nums[q.front()]);
+    res.push_back(nums[que.front()]);
     return res;
   }
 };
