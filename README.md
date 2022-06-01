@@ -6,6 +6,12 @@
 
 简单的模拟过程
 
+[38. 外观数列 - 力扣（LeetCode）](https://leetcode.cn/problems/count-and-say/)：给定一个正整数 `n`，输出外观数列的第 `n` 项，「外观数列」是一个整数序列，从数字 1 开始，序列中的每一项都是对前一项的描述。👉 [解答](模拟/38%20外观数列.cc)
+
+递归调用，如果 `n == 1` 返回 `"1"`，否则获取 `countAndSay(n - 1)`，然后遍历该字符串生成 `countAndSay(n)`
+
+时间复杂度：$O(mn)$，$m$ 是生成字符串的最大长度；空间复杂度：$O(m)$
+
 [43.字符串相乘]([43. 字符串相乘 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/multiply-strings/))：给出两个字符串形式表示的整数 `num1`，`num2`，返回 `num1 * num2` 的字符串形式表示。👉 [<u>字符串相乘</u>](模拟/43%20字符串相乘.cc)
 
 有下面两种方法可以处理
@@ -1698,6 +1704,16 @@ void dfs(const string &s, vector<string> &cur, int index) {
 [547. 省份数量 - 力扣（LeetCode）](https://leetcode.cn/problems/number-of-provinces/)：找出省份的数量，即连通块的数量。👉 [解答](回溯/574%20省份数量.cc)
 
 岛屿数量相同的解法
+
+[695. 岛屿的最大面积 - 力扣（LeetCode）](https://leetcode.cn/problems/max-area-of-island/)：岛屿是由一些相邻的 `1` 构成的组合，岛屿的面积是岛上值为 `1` 的单元格的数目，计算并返回` grid` 中最大的岛屿面积。👉 [解答](回溯/695%20岛屿的最大面积.cc)
+
+深搜、广搜、并查集都可以解决
+
+[854. 相似度为 K 的字符串 - 力扣（LeetCode）](https://leetcode.cn/problems/k-similar-strings/)：字符串 `s1` 和 `s2` 是 `k` 相似，如果我们可以交换 `s1` 中两个字母的位置正好 `k` 次，使结果字符串等于 `s2`。给定两个字符串 `s1` 和 `s2`，返回 `s1` 和 `s2` 的相似度。👉 [解答](搜索/854%20相似度为K的字符串.cc)
+
+这道题虽然是困难题，但是思路比较简单，可以直接通过 dfs 解决。对于 `s1[i]` 如果 `s2[i] == s1[i]` 则继续搜索下一个位置。否则的话遍历 `s2[i+1...len-1]`，如果 `s2[j] == s1[i]` 则交换 `s2[i]` 和 `s2[j]`，然后继续搜索下一个位置
+
+注意需要使用剪枝，否则会超时，当判断 `cur_count` 即当前交换次数大于 `res` 的时候，直接停止搜索，返回上一层搜索
 
 ## 数学
 
