@@ -12,6 +12,13 @@
 
 时间复杂度：$O(mn)$，$m$ 是生成字符串的最大长度；空间复杂度：$O(m)$
 
+[7. 整数反转 - 力扣（LeetCode）](https://leetcode.cn/problems/reverse-integer/)：给你一个 32 位有符号整数 `x`，返回将 `x` 中的数字部分反转后的结果，如果反转后的数字超出 int 范围则返回 0。👉 [解答](模拟/7%20整数反转.cc)
+
+1. 如果允许使用 long long，则使用 long long res 存储中间反转结果，最后判断 res 是否在 int 范围内
+2. 如果不允许使用 long long，则在中间计算的每一步都判断 `x != 0 && (res > INT_MAX / 10 || x < INT_MIN / 10)`，满足条件的话返回 0，否则在最后返回 `res`
+
+时间复杂度：$O(n)$，空间复杂度 $O(1)$，其中 $n$ 是 `x` 的十进制位数
+
 [43.字符串相乘]([43. 字符串相乘 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/multiply-strings/))：给出两个字符串形式表示的整数 `num1`，`num2`，返回 `num1 * num2` 的字符串形式表示。👉 [<u>字符串相乘</u>](模拟/43%20字符串相乘.cc)
 
 有下面两种方法可以处理
@@ -579,6 +586,19 @@ for (auto &val : nums) {
    - 如果 `matrix[x][y] > target`，则 `y` 这一列都大于 `target`，因此 `y--`
    - 如果 `matrix[x][y] < target`，则在 `y` 这一列中需要向下寻找一个元素，因此 `x++`
    - 当 `x == m || y < 0` 的时候停止查找
+
+### 连续子数组
+
+这里列出这类题目，具体的题解到对应的专题去查看
+
+- [152. 乘积最大子数组 - 力扣（LeetCode）](https://leetcode.cn/problems/maximum-product-subarray/)(DP)
+- [209. 长度最小的子数组 - 力扣（LeetCode）](https://leetcode.cn/problems/minimum-size-subarray-sum/)(前缀和 + 二分 / 滑动窗口)
+- [325. 和等于 k 的最长子数组长度 - 力扣（LeetCode）](https://leetcode.cn/problems/maximum-size-subarray-sum-equals-k/)(前缀和)
+- [523. 连续的子数组和 - 力扣（LeetCode）](https://leetcode.cn/problems/continuous-subarray-sum/)(前缀和)
+- [525. 连续数组 - 力扣（LeetCode）](https://leetcode.cn/problems/contiguous-array/)(前缀和)
+- [560. 和为 K 的子数组 - 力扣（LeetCode）](https://leetcode.cn/problems/subarray-sum-equals-k/)(前缀和)
+- [713. 乘积小于 K 的子数组 - 力扣（LeetCode）](https://leetcode.cn/problems/subarray-product-less-than-k/)(滑动窗口)
+- [974. 和可被 K 整除的子数组 - 力扣（LeetCode）](https://leetcode.cn/problems/subarray-sums-divisible-by-k/)(前缀和)
 
 ## 双指针
 
@@ -1445,6 +1465,22 @@ $$
 
 ## 贪心
 
+[45. 跳跃游戏 II - 力扣（LeetCode）](https://leetcode.cn/problems/jump-game-ii/)：给你一个非负整数数组 `nums`，你最初位于数组的第一个位置。数组中的每个元素代表你在该位置可以跳跃的最大长度。你的目标是使用最少的跳跃次数到达数组的最后一个位置，假设你总是可以达到数组的最后一个位置。👉 [解答](贪心/45%20跳跃游戏II.cc)
+
+**贪心**
+
+分别使用 `right_max` 和 `end` 记录当前跳 `res` 步可以到达的最远距离，以及当前可以到达的最远距离。遍历数组 `nums`，更新 `end = max(end, nums[i] + i)`，如果 `i == right_max` 则 `++res` 并且 `right_max = end`
+
+最后输出 `res`
+
+时间复杂度：$O(n)$，空间复杂度：$O(1)$
+
+**暴力**
+
+反向查找，初始的时候从 `pos = nums[i] - 1` 开始，遍历 `[0...pos-1]` 如果 `nums[i] + i >= pos`，则更新 `pos = i`， `++res`
+
+时间复杂度：$O(n^2)$，空间复杂度：$O(1)$
+
 [55. 跳跃游戏 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/jump-game/)：给定一个非负整数数组，最初位于数组的第一个下标，数组中的每个元素代表你在该位置可以跳跃的最大长度。判断能否到达最后一个下标。👉 [<u>跳跃游戏</u>](贪心55%20跳跃游戏.cc)
 
 使用 `right_most` 表示当前可以到达的最远距离，初始的时候为 0，`right_most = max(right_most, i + nums[i])`，并且数组的循环条件满足 `i <= right_most && i < nums.size()`
@@ -1489,6 +1525,16 @@ $$
 
 1. 贪心方法1：我们将所有字母和它的出现次数放到最大堆中，每次从堆中弹出两个字母追加到新排布的字符串后面，然后如果这两个字母的出现次数还是大于 0 的话就重新放入堆中。这样最后堆中可能会剩余一个字母，此时再追加到后面去。时间复杂度：$O(nlogW)$，W 是字母的种类，空间复杂度：$O(W)$
 2. 贪心方法2：对于出现次数小于等于 n / 2 的字母来说，我们优先将其放在奇数位置，如果奇数位置放满了，再放到偶数位置。对于出现次数等于 (n + 1) / 2 的字母来说只能放在偶数位置。时间复杂度：$O(n + W)$，空间复杂度：$O(W)$
+
+[1024. 视频拼接 - 力扣（LeetCode）](https://leetcode.cn/problems/video-stitching/)：给你一系列视频片段，这些片段来自一项持续时间为 `time` 秒的体育赛事，这些片段可能有所重叠，也有可能长度不一。使用数组 `clips` 描述所有的视频片段，其中 `clips[i] = [starti, endi]` 表示某个视频片段开始于 `starti` 并于 `endi` 结束。对于每个片段都可以自由的再剪辑，例如 `[0, 7]` 可以剪切成 `[0, 1] + [1, 3] + [3, 7]` 三部分。我们需要将这些片段进行再剪辑，并将剪辑后的内容重新拼接成 `[0, time]`，返回所需片段的最小数目，如果无法完成该任务，返回 -1。👉 [解答](贪心/1024%20视频拼接.cc)
+
+这道题类似于 **45.跳跃数组II**
+
+我们可以首先预处理 `clips` 数组，获取每个 `starti` 为起始可以到达的最远的 `end`，记为 `[vec[starti]] = max_end`
+
+然后遍历 [0, time - 1]，每次更新可以到达的最远距离 `last = max(last, vec[i])`，然后判断是否到达极限距离了 `i == last`，最后如果 `i == pre` 表示需要使用下一个新的视频片段
+
+时间复杂度：$O(n + time)$，空间复杂度：$O(time)$
 
 [1330. 翻转子数组得到最大的数组值 - 力扣（LeetCode）](https://leetcode.cn/problems/reverse-subarray-to-maximize-array-value/)：给你一个整数数组 `nums`，「数组值」定义为所有满足 `0 <= i < nums.length-1` 的 `|nums[i]-nums[i+1]|` 的和。你可以选择给定数组的任意子数组，并将该子数组进行翻转，只能执行一次这个操作，请你找到可行的最大数组值。👉 [解答](贪心/1330%20翻转子数组得到最大的数组值.cc)
 
@@ -1725,6 +1771,47 @@ void dfs(const string &s, vector<string> &cur, int index) {
 
 ## 前缀和
 
+*计算所有满足目标条件连续子数组的个数，哈希表需要记录 prefix 对应的子数组数量；计算子数组的长度，哈希表需要记录 prefix 出现的索引（最大或最小）*
+
+[325. 和等于 k 的最长子数组长度 - 力扣（LeetCode）](https://leetcode.cn/problems/maximum-size-subarray-sum-equals-k/)：给定一个数组 `nums` 和一个目标值 `k`，找到和等于 `k` 的最长连续子数组的长度。如果不存在任意一个符合要求的子数组，则返回 0。👉 [解答](前缀和/325%20和等于K的最长子数组长度.cc)
+
+使用哈希表记录前缀 prefix 出现的最小索引值。遍历数组：
+
+1. 对于 `nums[i]` 计算其前缀和，然后判断哈希表中是否存在 `prefix - k`，如果存在的话 `res = max(res, i - map[prefix-  k])`
+2. 判断 `prefix` 是否存在哈希表中，如果不存在更新 `map[prefix] = i`
+
+时间复杂度：$O(n)$，空间复杂度：$O(n)$
+
+[523. 连续的子数组和 - 力扣（LeetCode）](https://leetcode.cn/problems/continuous-subarray-sum/)：给你一个整数数组 `nums` 和一个整数 `k`，请你判断数组中是否含有同时满足下述条件的连续子数组：子数组大小至少为 2，且子数组元素总和为 `k` 的倍数。如果存在返回 `true`，否则返回 `false`。👉 [解答](前缀和/523%20连续的子数组和.cc)
+
+与 **560题** 类似，区别在于这里放入哈希表需要延后一个元素，并且需要放入 %k 的结果。对于当前的前缀和 `cur_prefix`，如果哈希表中存在 `cur_prefix % k` 则直接返回 `true`。否则的话在哈希表中存入 `pre_prefix`，然后令 `pre_prefix = cur_prefix % k`。最后 `nums` 的所有元素遍历完毕就返回 `false`
+
+时间复杂度：$O(n)$，空间复杂度：$O(n)$
+
+> 也可以使用哈希表保存余数为 `remainder` 的最小下标，然后每次判断的时候取出 `map[cur_prefix % k]`，如果下标和当前下标相差大于等于 2 则直接返回 true
+
+[525. 连续数组 - 力扣（LeetCode）](https://leetcode.cn/problems/contiguous-array/)：给定一个二进制数组 `nums`，找到含有相同数量的 `0` 和 `1` 的最长连续子数组，返回该子数组的长度。👉 [解答](前缀和/525%20连续数组.cc)
+
+我们可以将数组中所有的 0 都改为 -1，这样问题就变为，找到数组中最长的和为 0 的连续子数组，那么这道题就变味了 **325题**
+
+时间复杂度：$O(n)$，空间复杂度：$O(n)$
+
+[560. 和为 K 的子数组 - 力扣（LeetCode）](https://leetcode.cn/problems/subarray-sum-equals-k/)：给你一个整数数组 `nums` 和一个整数 `k`，请你统计并返回该数组中和为 `k` 的子数组的个数。👉 [解答](前缀和/560%20和为K的子数组.cc)
+
+这题不能用滑动窗口，因为 `nums[i]` 可以小于 0，因此右指针向右移动不能保证区间和一定会增大，同理收缩左指针也不能保证区间和一定会减小
+
+这题可以使用前缀和 + 哈希表，对于前缀和为 `prefix` 的以 `nums[i]` 为结尾的元素来说，和为 `k` 的子数组的个数即是在 `j < i` 的元素里面找出前缀和为 `prefix - k` 的个数，那么 `prefix - k` 就是以 `nums[i]` 为结尾和为 `k` 的子数组的个数
+
+使用哈希表保存当前可以看到的前缀和为 `prefix` 的个数，考虑 `nums[i]`，如果哈希表中存在 `prefix - k` 这个元素，那么令 `res += map[prefix - k]`。最后增加 `map[prefix]` 的个数
+
+时间复杂度：$O(n)$，空间复杂度：$O(n)$
+
+[724. 寻找数组的中心下标 - 力扣（LeetCode）](https://leetcode.cn/problems/find-pivot-index/)：数组中心下标的定义是，该元素左右两侧子数组的和相同。给你一个整数组 `nums`，请计算数组的中心下标，如果存在多个中心下标，返回最左侧的那个。👉 [解答](前缀和/724%20寻找数组的中心下标.cc)
+
+简单使用前缀和计算即可，对于下标 `i`，计算 `prefix - nums[i] == total_cnt - prefix`，如果成立的话返回 `i`
+
+时间复杂度：$O(n)$，空间复杂度：$O(1)$
+
 [862.和至少为K的最短子数组]([862. 和至少为 K 的最短子数组 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/shortest-subarray-with-sum-at-least-k/))：给你一个整数数组 `nums` 和一个整数 `k`，找出 `nums` 中和至少为 `k` 的最短非空子数组，返回该数组的长度，如果不存在则返回 -1。👉 [<u>和至少为K的最短子数组</u>](前缀和/862%20和至少为K的最短子数组.cc)
 
 这道题和 **209题** 不一样，209 题数组中不包含负数，因此可以使用滑动窗口来解决
@@ -1734,6 +1821,14 @@ void dfs(const string &s, vector<string> &cur, int index) {
 我们使用一个队列来保存 `trie` 前缀和中的元素，队列中元素的下标是有序的
 
 - 首先求出 `nums` 数组中每一个元素的前缀和，使用 `trie[i]` 表示 `nums` 数组中前 `i` 个元素之和，然后遍历 `trie` 数组。从队列尾部弹出 `trie[q.back()] >= trie[i]` 的元素，原因上面已经提到了。然后判断 `trie[i]` 和队列首部元素的差是否满足大于等于 `k`，如果满足该条件则更新 `len` 并弹出队列首部的元素
+
+[974. 和可被 K 整除的子数组 - 力扣（LeetCode）](https://leetcode.cn/problems/subarray-sums-divisible-by-k/)：给定一个整数数组 `nums` 和一个整数 `k`，返回其中元素之和可被 `k` 整除的子数组的数目。👉 [解答](前缀和/974%20和可被K整除的子数组.cc)
+
+这道题和 **523题** 的区别在于，首先这道题没有限制子数组的长度，并且数组元素是会出现负数的。我们使用哈希表 `map` 记录余数为 `remainder` 的前缀和的个数，使用 `res` 记录子数组的数目
+
+遍历 `nums` 数组，计算前缀和 `prefix` 并对 `prefix` 取模，使得 `prefix % k` 保持为正数。然后检查 `map` 中是否含有 `prefix`，如果有的话 `res += map[prefix]`。最后 `++map[prefix]`
+
+时间复杂度：$O(n)$，空间复杂度：$O(n)$
 
 ## 树状数组
 
