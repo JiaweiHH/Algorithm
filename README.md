@@ -301,6 +301,17 @@ void postOrder(const vector<int> &preorder, int l_pre, int r_pre, const vector<i
 - 前序遍历一边遍历一边展开。另一种前序遍历的写法，使用 `prev` 记录上一次遍历到的节点，然后 `prev->right = cur; prev->left = nullptr;`。时间复杂度 `O(n)`，空间复杂度 `O(n)`
 - 寻找左子树最右边的节点。记当前节点为 `cur`，每次判断 `cur->left` 是不是为空，如果不为空寻找 `cur->left` 子树最右边的节点记为 `next`；然后执行 `next->right = cur->right; cur->right = cur->left; cur->left = nullptr;`；最后更新 `cur = cur->right;`。时间复杂度 `O(n)`，空间复杂度 `O(1)`
 
+[117. 填充每个节点的下一个右侧节点指针 II - 力扣（LeetCode）](https://leetcode.cn/problems/populating-next-right-pointers-in-each-node-ii/)：填充每个二叉树节点的 `next` 指针，让这个指针指向其下一个右侧节点，如果没有下一个右侧节点则 `next` 指针设置为 `NULL`。👉 [解答](二叉树/117%20填充每个节点的下一个右侧节点指针II.cc)
+
+使用层序遍历，对每一层的节点，让它指向队列首部的节点（每一层的最后一个节点除外）
+
+**进阶：O(1) 空间复杂度**
+
+利用 `next` 指针进行层序遍历，上一层在遍历的时候帮助下一层建立连接。使用 `next_start` 表示下一层的第一个节点，`prev` 表示下一层上一个遍历到的节点
+
+1. 如果当前层正在遍历的节点有左孩子，则令 `prev->next = node->left; prev = node->left`
+2. 如果当前层正在遍历的节点有右孩子，则令 `prev->next = node->right; prev = node->right`
+
 [124.二叉树中的最大路径和](https://leetcode-cn.com/problems/binary-tree-maximum-path-sum/)：路径被定义为一条从树中任意节点出发，沿父节点-子节点连接，达到任意节点的序列。同一个节点在一条路径中至多出现一次，该路径最少包含一个节点，且不一定经过根节点。给你一棵二叉树 `root`，返回其最大路径和。👉 [二叉树中的最大路径和](二叉树/124%20二叉树中的最大路径和.cc)
 
 递归。使用 `dfs(TreeNode *root)` 返回经过节点 `root` 的最大路径和，该路径可能有三种情况
@@ -820,6 +831,12 @@ $$
 很基础的双指针算法
 
 ## 排序
+
+[179. 最大数 - 力扣（LeetCode）](https://leetcode.cn/problems/largest-number/)：给定一个非负整数 `nums`，重新排列每个数的顺序，使之组成一个最大的整数。👉 [解答](排序/179%20最大数.cc)
+
+自定义排序，对于两个整数 a 和 b，考虑 a 和 b 拼接之后、b 和 a 拼接之后的两个数字大小，定义比较函数。然后使用快排对原数组进行排序
+
+时间复杂度：$O(nlognlogm)$，空间复杂度：$O(logn)$
 
 [1424.对角线遍历II]([1424. 对角线遍历 II - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/diagonal-traverse-ii/))：给你一个列表 `nums`，里面每个元素都是整数列表，按照以下方式，按顺序返回 `nums` 中对角线上的整数。👉 [<u>对角线遍历II</u>](排序/1424%20对角线遍历II.cc)
 
