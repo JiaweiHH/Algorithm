@@ -30,20 +30,20 @@ public:
 
 template <> class Solution<2> {
 public:
-  int countSubstrings(string s) {
-    int result = 0;
-    for (int i = 0; i < s.size(); i++) {
-      result += extend(s, i, i, s.size());     // 以i为中心
-      result += extend(s, i, i + 1, s.size()); // 以i和i+1为中心
+  int centralExpand(string &s, int l, int r) {
+    int cnt = 0;
+    while (l >= 0 && r < s.size() && s[l] == s[r]) {
+      --l;
+      ++r;
+      ++cnt;
     }
-    return result;
+    return cnt;
   }
-  int extend(const string &s, int i, int j, int n) {
+  int countSubstrings(string s) {
     int res = 0;
-    while (i >= 0 && j < n && s[i] == s[j]) {
-      i--;
-      j++;
-      res++;
+    for (int i = 0; i < s.size(); ++i) {
+      res += centralExpand(s, i, i);
+      res += centralExpand(s, i, i + 1);
     }
     return res;
   }

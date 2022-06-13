@@ -33,27 +33,27 @@ public:
 /// 中心扩展
 template <> class Solution<2> {
 public:
-  string longestPalindrome(string s) {
-    int start = 0, end = 0;
-    for (int i = 0; i < s.size(); ++i) {
-      auto [left1, right1] = centralExtend(s, i, i);
-      auto [left2, right2] = centralExtend(s, i, i + 1);
-      if (right1 - left1 > end - start) {
-        start = left1;
-        end = right1;
-      }
-      if (right2 - left2 > end - start) {
-        start = left2;
-        end = right2;
-      }
+  pair<int, int> centralExpand(int l, int r, string &s) {
+    while (l >= 0 && r < s.size() && s[l] == s[r]) {
+      --l;
+      ++r;
     }
-    return s.substr(start, end - start + 1);
+    return {l + 1, r - 1};
   }
-  pair<int, int> centralExtend(const string &s, int left, int right) {
-    while (left >= 0 && right < s.size() && s[left] == s[right]) {
-      left--;
-      right++;
+  string longestPalindrome(string s) {
+    int l = 0, len = 1;
+    for (int i = 0; i < s.size(); ++i) {
+      auto [l1, r1] = centralExpand(i, i, s);
+      auto [l2, r2] = centralExpand(i, i + 1, s);
+      if (r1 - l1 + 1 > len) {
+        l = l1;
+        len = r1 - l1 + 1;
+      }
+      if (r2 - l2 + 1 > len) {
+        l = l2;
+        len = r2 - l2 + 1;
+      }
     }
-    return {left + 1, right - 1};
+    return s.substr(l, len);
   }
 };

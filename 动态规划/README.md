@@ -591,24 +591,24 @@ int maxProfit(vector<int>& prices) {
 - 方法一：动态规划
   - 记 `dp[i][j]` 表示 `s[i...j]` 是不是一个回文串，此时有：如果 `s[i] == s[j]` 那么 `dp[i][j] = dp[i + 1][j - 1]`，否则 `dp[i][j] = false`
   - 初始条件：`dp[i][j] = true, i >= j`
-- 方法二：双指针，具体实现看下面的代码
+- 方法二：双指针中心扩展，具体实现看下面的代码
 
 ```c++
 /// 双指针方法
-int countSubstrings(string s) {
-  int result = 0;
-  for (int i = 0; i < s.size(); i++) {
-    result += extend(s, i, i, s.size());     // 以i为中心
-    result += extend(s, i, i + 1, s.size()); // 以i和i+1为中心
+int centralExpand(string &s, int l, int r) {
+  int cnt = 0;
+  while (l >= 0 && r < s.size() && s[l] == s[r]) {
+    --l;
+    ++r;
+    ++cnt;
   }
-  return result;
+  return cnt;
 }
-int extend(const string &s, int i, int j, int n) {
+int countSubstrings(string s) {
   int res = 0;
-  while (i >= 0 && j < n && s[i] == s[j]) {
-    i--;
-    j++;
-    res++;
+  for (int i = 0; i < s.size(); ++i) {
+    res += centralExpand(s, i, i);
+    res += centralExpand(s, i, i + 1);
   }
   return res;
 }
@@ -626,6 +626,15 @@ int extend(const string &s, int i, int j, int n) {
 > 小结：有时候 `dp[i]` 表示 `s[0...i-1]`，有时候 `dp[i]` 表示 `s[0...i]`，具体情况需要具体分析。一般来说用来表示 `s[0...i-1]` 在大多数情况下都是可以的，但是如果可以的话用来表示 `s[0...i]` 更好理解一些
 
 ### 区间 DP
+
+[5.最长回文子串](https://leetcode-cn.com/problems/longest-palindromic-substring/)：给你一个字符串 `s`，找到 `s` 中的最长回文子串返回。👉 [<u>最长回文子串</u>](./动态规划/5%20最长回文子串.cc)
+
+- 方法一：动态规划。时间复杂度 `O(n^2)`，空间复杂度 `O(n^2)`
+  - 使用 `dp[i][j]` 表示 `s[i-1...j-1]` 是不是一个回文串，边更新 `dp` 数组边记录最长回文串的起始位置和长度
+
+- 方法二：中心扩展。时间复杂度 `O(n^2)`，空间复杂度 `O(1)`
+  - 遍历字符串 `s`，对于下标 `i`，从 `i` 和 `(i, i + 1)` 往左右两边扩展，找到最长的回文串
+
 
 [312. 戳气球 - 力扣（LeetCode）](https://leetcode.cn/problems/burst-balloons/)：有 `n` 个气球，每个气球上面都标有一个数字，这些数字在 `nums` 中。现在要戳破所有气球，戳破第 `i` 个气球可以获得 `nums[i - 1] * nums[i] * nums[i + 1]` 的得分，如果 `i - 1` 或者 `i + 1` 越出了数组边界，则 `nums[i - 1]` 或 `nums[i + 1]` 等于 `1`。计算最多可以获得多少得分。👉 [解答](312%20戳气球.cc)
 
@@ -671,15 +680,6 @@ auto match = [&](int i, int j) -> bool {
 [221.最大正方形](https://leetcode-cn.com/problems/maximal-square/)：在一个由 `0` 和 `1` 组成的二维矩阵内，找到只包含 `1` 的最大正方形，返回其面积。👉 [<u>最大正方形</u>](动态规划/221%20最大正方形.cc)
 
 使用 `dp[i][j]` 表示以 `matrix[i - 1][j - 1]` 为右下角的正方形的最大边长，则有 `dp[i][j] = min(dp[i - 1][j - 1], dp[i - 1][j], dp[i][j - 1])`，即 `(i, j)` 为右下角的正方形的边长取决于 `(i - 1, j - 1)`、`(i - 1, j)` 、`(i, j - 1)` 为右下角的正方形边长，其值为它们中的最小值加一
-
-[5.最长回文子串](https://leetcode-cn.com/problems/longest-palindromic-substring/)：给你一个字符串 `s`，找到 `s` 中的最长回文子串返回。👉 [<u>最长回文子串</u>](./动态规划/5%20最长回文子串.cc)
-
-- 方法一：动态规划。时间复杂度 `O(n^2)`，空间复杂度 `O(n^2)`
-  - 使用 `dp[i][j]` 表示 `s[i-1...j-1]` 是不是一个回文串，边更新 `dp` 数组边记录最长回文串的起始位置和长度
-
-- 方法二：中心扩展。时间复杂度 `O(n^2)`，空间复杂度 `O(1)`
-  - 遍历字符串 `s`，对于下标 `i`，从 `i` 和 `(i, i + 1)` 往左右两边扩展，找到最长的回文串
-
 
 [1155.掷骰子的N种方法]([1155. 掷骰子的N种方法 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/number-of-dice-rolls-with-target-sum/))：给你 `n` 个一样的骰子，每个骰子上面有 `k` 个面，分别标号为 `1` 到 `k`。给定三个整数 `n`，`k` 和 `target`，求出投掷 `n` 个骰子使得正面朝上的数字之和等于 `target` 的总数，答案对 `1e9 + 7` 去模。👉 [<u>掷骰子的N种方法</u>](动态规划/1155%20掷骰子的N种方法)
 
