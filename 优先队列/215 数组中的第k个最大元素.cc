@@ -1,6 +1,12 @@
 #include <vector>
 using namespace std;
 
+/**
+ * @brief 无序数组中查找中位数，也是一样的做法
+ * 
+ * @tparam nt 
+ */
+
 template <int> class Solution;
 
 /// @brief 快排

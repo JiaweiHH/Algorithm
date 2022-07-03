@@ -11,53 +11,76 @@ struct ListNode {
 
 template <int> class Solution;
 
-/// 递归归并排序
+/// @brief 归并排序
 template <> class Solution<1> {
 public:
-  ListNode *sortList(ListNode *head) {
-    if (head == nullptr || head->next == nullptr)
-      return head;
+  ListNode *findMiddle(ListNode *head) {
     ListNode *slow = head, *fast = head->next;
     while (fast && fast->next) {
       slow = slow->next;
       fast = fast->next->next;
     }
-
-    // 对左右两半链表进行排序
-    ListNode *left = sortList(slow->next);
-    slow->next = nullptr;
-    ListNode *right = sortList(head);
-
-    // 合并排序的链表
-    ListNode *dummy = new ListNode(0);
-    ListNode *tmp = dummy;
+    return slow;
+  }
+  ListNode *merge_sort(ListNode *head) {
+    if (head->next == nullptr)
+      return head;
+    ListNode *node = findMiddle(head);
+    ListNode *tmp = node->next;
+    node->next = nullptr;
+    ListNode *left = merge_sort(head), *right = merge_sort(tmp);
+    ListNode *dummy = new ListNode(-1), *prev = dummy;
     while (left && right) {
       if (left->val < right->val) {
-        tmp->next = left;
+        prev->next = left;
         left = left->next;
       } else {
-        tmp->next = right;
+        prev->next = right;
         right = right->next;
       }
-      tmp = tmp->next;
+      prev = prev->next;
     }
     while (left) {
-      tmp->next = left;
+      prev->next = left;
       left = left->next;
-      tmp = tmp->next;
+      prev = prev->next;
     }
     while (right) {
-      tmp->next = right;
+      prev->next = right;
       right = right->next;
-      tmp = tmp->next;
+      prev = prev->next;
     }
     return dummy->next;
+  }
+  // O(nlogn), O(1)
+  ListNode *sortList(ListNode *head) {
+    if (head == nullptr || head->next == nullptr)
+      return head;
+    return merge_sort(head);
   }
 };
 
 /// 迭代归并排序
 template <> class Solution<2> {
 public:
+  ListNode *merge(ListNode *head1, ListNode *head2) {
+    ListNode *dummy = new ListNode(0), *tmp = dummy;
+    while (head1 && head2) {
+      if (head1->val < head2->val) {
+        tmp->next = head1;
+        head1 = head1->next;
+      } else {
+        tmp->next = head2;
+        head2 = head2->next;
+      }
+      tmp = tmp->next;
+    }
+    if (head1)
+      tmp->next = head1;
+    else
+      tmp->next = head2;
+    return dummy->next;
+  }
   ListNode *sortList(ListNode *head) {
     ListNode *dummy = new ListNode(0);
     dummy->next = head;
@@ -96,35 +119,18 @@ public:
     }
     return dummy->next;
   }
-  ListNode *merge(ListNode *head1, ListNode *head2) {
-    ListNode *dummy = new ListNode(0), *tmp = dummy;
-    while (head1 && head2) {
-      if (head1->val < head2->val) {
-        tmp->next = head1;
-        head1 = head1->next;
-      } else {
-        tmp->next = head2;
-        head2 = head2->next;
-      }
-      tmp = tmp->next;
-    }
-    if (head1)
-      tmp->next = head1;
-    else
-      tmp->next = head2;
-    return dummy->next;
-  }
 };
 
-/// 快排
+/// @brief 快速排序（会超时，知道有这个写法就可以）
 template <> class Solution<3> {
 public:
-  ListNode *sortList(ListNode *head) { return quickSort(head); }
   ListNode *quickSort(ListNode *head) {
     if (head == nullptr || head->next == nullptr)
       return head;
-    ListNode *small = new ListNode(0), *large = new ListNode(0);
-    ListNode *pA = small, *pB = large, *tmp = head->next;
+    // 以 head 为 pivot
+    ListNode *small = new ListNode(-1), *large = new ListNode(-1),
+             *tmp = head->next;
+    ListNode *pA = small, *pB = large;
     while (tmp) {
       if (tmp->val < head->val) {
         pA->next = tmp;
@@ -135,82 +141,74 @@ public:
       }
       tmp = tmp->next;
     }
-
     pA->next = head;
     head->next = nullptr;
     pB->next = nullptr;
-
-    ListNode *left = quickSort(small->next);
-    ListNode *right = quickSort(large->next);
+    ListNode *left = quickSort(small->next), *right = quickSort(large->next);
     head->next = right;
-
     return left;
   }
+  ListNode *sortList(ListNode *head) { return quickSort(head); }
 };
 
-/// 堆排序
+/// @brief 堆排序
 template <> class Solution<4> {
 public:
   ListNode *sortList(ListNode *head) {
     auto cmp = [](const ListNode *lhs, const ListNode *rhs) {
       return lhs->val > rhs->val;
     };
-    priority_queue<ListNode *, vector<ListNode *>, decltype(cmp)> queue(cmp);
+    priority_queue<ListNode *, vector<ListNode *>, decltype(cmp)> heap(cmp);
     while (head) {
-      queue.push(head);
+      heap.push(head);
       head = head->next;
     }
-    ListNode *dummy = new ListNode(0), *tmp = dummy;
-    while (!queue.empty()) {
-      ListNode *node = queue.top();
-      queue.pop();
-      tmp->next = node;
-      tmp = node;
+    ListNode *dummy = new ListNode(-1), *prev = dummy;
+    while (!heap.empty()) {
+      prev->next = heap.top();
+      heap.pop();
+      prev = prev->next;
     }
-    tmp->next = nullptr;
+    prev->next = nullptr; // 不要忘记执行，否则会出错
     return dummy->next;
   }
 };
 
-/// 手写堆排序
+/// @brief 堆排序 手写堆
 template <> class Solution<5> {
 public:
-  ListNode *sortList(ListNode *head) {
-    ListNode *tmp = head;
-    vector<ListNode *> heap(1, nullptr);
-    while (tmp) {
-      heap.push_back(tmp);
-      tmp = tmp->next;
-    }
-    int heapSize = heap.size() - 1;
-    buildMinHeap(heap, heapSize);
-
-    ListNode *dummy = new ListNode(0);
-    tmp = dummy;
-    while (heapSize > 0) {
-      ListNode *node = heap[1];
-      tmp->next = node;
-      tmp = tmp->next;
-      swap(heap[1], heap[heapSize]);
-      heapSize--;
-      minHeapify(heap, 1, heapSize);
-    }
-    tmp->next = nullptr;
-    return dummy->next;
-  }
-  void buildMinHeap(vector<ListNode *> &heap, int heapSize) {
-    for (int i = heapSize / 2; i > 0; --i)
-      minHeapify(heap, i, heapSize);
-  }
-  void minHeapify(vector<ListNode *> &heap, int index, int heapSize) {
-    int l = index * 2, r = index * 2 + 1, target = index;
+  void minHeapify(vector<ListNode *> &heap, int idx, size_t heapSize) {
+    int l = idx * 2, r = idx * 2 + 1, target = idx;
     if (l <= heapSize && heap[l]->val < heap[target]->val)
       target = l;
     if (r <= heapSize && heap[r]->val < heap[target]->val)
       target = r;
-    if (target != index) {
-      swap(heap[index], heap[target]);
+    if (target != idx) {
+      swap(heap[target], heap[idx]);
       minHeapify(heap, target, heapSize);
     }
+  }
+  void buildHeap(vector<ListNode *> &heap, size_t heapSize) {
+    for (int i = heapSize / 2; i >= 1; --i)
+      minHeapify(heap, i, heapSize);
+  }
+  ListNode *sortList(ListNode *head) {
+    vector<ListNode *> heap(1);
+    size_t heapSize = 0;
+    while (head) {
+      heap.push_back(head);
+      ++heapSize;
+      head = head->next;
+    }
+    buildHeap(heap, heapSize);
+    ListNode *dummy = new ListNode(-1), *prev = dummy;
+    while (heapSize > 0) {
+      prev->next = heap[1];
+      prev = prev->next;
+      swap(heap[1], heap[heapSize--]);
+      minHeapify(heap, 1, heapSize);
+    }
+    prev->next = nullptr;
+    return dummy->next;
   }
 };
