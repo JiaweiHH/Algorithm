@@ -6,32 +6,31 @@ using namespace std;
 class Solution {
 public:
   vector<int> findAnagrams(string s, string p) {
+    unordered_map<char, int> map;
+    for (auto ch : p)
+      ++map[ch];
     vector<int> res;
-    // 记录每个目标字符的个数
-    unordered_map<char, int> target;
-    for (const auto &c : p)
-      target[c]++;
-    // 记录当前窗口每个字符的数量
-    unordered_map<char, int> cur;
-    int left = 0, right = 0, valid = 0;
-    while (right != s.size()) {
-      char c = s[right++];
-      if (target.count(c)) {
-        cur[c]++;
-        if (cur[c] == target[c])
-          valid++;
-      }
-      // 收缩窗口
-      while (right - left >= p.size()) {
-        if (valid == target.size())
-          res.push_back(left);
-        char tmp = s[left++];
-        if (cur.count(tmp)) {
-          if (cur[tmp] == target[tmp])
-            valid--;
-          cur[tmp]--;
+    int len = static_cast<int>(s.size()) - static_cast<int>(p.size());
+    for (int i = 0; i <= len; ++i) {
+      if (!map.count(s[i]))
+        continue;
+      int l = i, r = i, valid = 0;
+      unordered_map<char, int> cur;
+      while (r != s.size()) {
+        if (!map.count(s[r]))
+          break;
+        if (++cur[s[r]] == map[s[r]])
+          ++valid;
+        while (cur[s[r]] > map[s[r]]) {
+          if (cur[s[l]]-- == map[s[l]])
+            --valid;
+          ++l;
         }
+        if (valid == map.size())
+          res.push_back(l);
+        ++r;
       }
+      i = r;
     }
     return res;
   }

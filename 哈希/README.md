@@ -20,6 +20,14 @@
 
 > 也可以根据异位词所有字母的出现次数相同，将这个线索作为 key，不过 C++ 需要自定义哈希函数 -> 自定义一个实现了 `operator()` 的对象，可以是 lambda，通过 std::hash<int>{} 自定自己的哈希函数
 
+```c++
+auto arrayHash = [fn = hash<int>{}] (const array<int, 26>& arr) -> size_t {
+  return accumulate(arr.begin(), arr.end(), 0u, [&](size_t acc, int num) {
+    return (acc << 1) ^ fn(num);
+  });
+};
+```
+
 [128.最长连续序列](https://leetcode-cn.com/problems/longest-consecutive-sequence/)：给你一个未排序的数组 `nums`，找出数字连续的最长序列的长度，请你设计并实现一个时间复杂度为 `O(n)` 的算法。👉 [<u>最长连续序列</u>](哈希/128%20最长连续序列.cc)
 
 可以分别使用 `unordered_map` 和 `unordered_set` 来实现
@@ -58,12 +66,22 @@ for (auto &val : nums) {
 
 3. 并查集。所有相邻的元素属于一个集合中，不断的对集合进行合并，并记录每个集合当前大小
 
+[214. 最短回文串 - 力扣（LeetCode）](https://leetcode.cn/problems/shortest-palindrome/)：给你一个字符串，通过在前面添加字符使其成为一个回文串，返回通过这种方式获得的最短的回文串。👉 [解答](214%20最短回文串.cc)
+
+对于字符串 `s`，我们可以找到以 `s[0]` 为起点的最长的回文子串，例如 `s[0..p]` 是最长的回文子串。此时就可以将 `s[p+1..n-1]` 添加到 `s` 的前面就可以构成最短回文串
+
+寻找最长回文子串可以通过暴力的方法，但是会超时。因此可以对字符串进行 base 编码，如果某个字符串 `str` 从前往后和从后往前获得的编码都相同，那么就说明这个字符串就是回文串。我们可以通过这种方式遍历一遍 `s`，找到最长的回文子串，然后将剩余的字符串添加到 `s` 的前面即可
+
 [242. 有效的字母异位词 - 力扣（LeetCode）](https://leetcode.cn/problems/valid-anagram/)：判断字符串 `s` 和字符串 `t` 中字母出现的次数是否都是相同的。👉 [解答](242%20有效的字母异位词.cc)
 
 1. 排序
 2. 哈希表
 
 这题比较简单
+
+[249. 移位字符串分组 - 力扣（LeetCode）](https://leetcode.cn/problems/group-shifted-strings/)：给定一个字符串，对该字符串进行移位操作，将字符串中的每一位字符都变为其下一个字符。给定一个字符串列表，将所有能够通过移位操作变为相同字符串的字符串分为一组。👉 [解答](249%20移位字符串分组.cc)
+
+所有能够分到一组的字符串都满足，相邻字符的差值相同。将这个条件作为 key 进行哈希，将 key 相同的字符串保存到一起
 
 [266. 回文排列 - 力扣（LeetCode）](https://leetcode.cn/problems/palindrome-permutation/)：给你一个字符串，判断能否经过重新排列组合，使之成为一个回文串。👉 [解答](266%20回文排列.cc)
 

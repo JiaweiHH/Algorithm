@@ -5,77 +5,83 @@ using namespace std;
 template <int> class LRUCache;
 
 /// 自己实现链表
+struct Node {
+  Node(int key, int value)
+      : key_(key), value_(value), prev(nullptr), next(nullptr) {}
+  Node() : prev(nullptr), next(nullptr) {}
+  int key_;
+  int value_;
+  Node *prev, *next;
+};
+
 template <> class LRUCache<1> {
 public:
-  LRUCache(int capacity) : _capacity(capacity), _size(0) {
-    _dummy = new ListNode;
-    _tail = _dummy;
-  }
+  LRUCache(int capacity)
+      : capacity_(capacity), size_(0), dummy(new Node), tail(dummy) {}
 
-  void erase_first_node() {
-    ListNode *del = _dummy->next;
-    _dummy->next = del->next;
-    if (del->next)
-      del->next->prev = _dummy;
-    _map.erase(del->_key);
-    if (_tail == del)
-      _tail = _dummy;
-    delete (del);
-    --_size;
-  }
-
-  void insert_kv(int k, int v) {
-    ListNode *node = new ListNode(k, v);
-    _tail->next = node;
-    node->prev = _tail;
-    _tail = node;
-    _map[k] = _tail;
-    ++_size;
-  }
-
-  void move_to_back(int key) {
-    ListNode *node = _map[key];
-    if (node->next == nullptr)
+  void erase_last_node() {
+    hash_.erase(tail->key_);
+    if (size_ == 1) {
+      auto node = dummy->next;
+      // cout << "erase key " << node->key_ << ", " << node->value_ << "\n";
+      dummy->next = nullptr;
+      delete (node);
+      tail = dummy;
+      --size_;
       return;
+    }
+    tail = tail->prev;
+    delete (tail->next);
+    tail->next = nullptr;
+    --size_;
+  }
+
+  void move_to_first(int key) {
+    if (size_ == 1)
+      return;
+    Node *node = hash_[key];
     node->prev->next = node->next;
-    node->next->prev = node->prev;
-    node->prev = _tail;
-    node->next = nullptr;
-    _tail->next = node;
-    _tail = node;
+    if (node->next)
+      node->next->prev = node->prev;
+    if (node == tail)
+      tail = node->prev;
+    node->next = dummy->next;
+    dummy->next->prev = node;
+    dummy->next = node;
+    node->prev = dummy;
   }
 
   int get(int key) {
     // cout << "get " << key << "\n";
-    if (!_map.count(key))
+    if (!hash_.count(key))
       return -1;
-    move_to_back(key);
-    return _map[key]->_val;
+    move_to_first(key);
+    return hash_[key]->value_;
   }
 
   void put(int key, int value) {
-    // cout << "put " << "{" << key << ", " << value << "}\n";
-    if (_map.count(key)) {
-      _map[key]->_val = value;
-      move_to_back(key);
+    // cout << "put " << key << ", " << value << "\n";
+    if (hash_.count(key)) {
+      hash_[key]->value_ = value;
+      move_to_first(key);
       return;
     }
-    if (_size == _capacity)
-      erase_first_node();
-    insert_kv(key, value);
+    if (size_ == capacity_) {
+      erase_last_node();
+    }
+    Node *node = new Node(key, value);
+    ++size_;
+    hash_[key] = node;
+    tail->next = node;
+    node->prev = tail;
+    tail = node;
+    move_to_first(key);
   }
 
 private:
-  struct ListNode {
-    ListNode() : _key(-1), _val(-1), prev(nullptr), next(nullptr) {}
-    ListNode(int k, int v) : _key(k), _val(v), prev(nullptr), next(nullptr) {}
-    int _key, _val;
-    ListNode *prev, *next;
-  };
-  unordered_map<int, ListNode *> _map;
-  ListNode *_dummy, *_tail;
-  int _size;
-  int _capacity;
+  Node *dummy, *tail;
+  unordered_map<int, Node *> hash_;
+  int capacity_, size_;
 };
 
 /// 使用 STL list
@@ -118,5 +124,3 @@ private:
   unordered_map<int, node> _map;
   int _capacity;
 };
-
-

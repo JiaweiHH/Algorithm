@@ -3,6 +3,7 @@ using namespace std;
 
 template <int> class Solution;
 
+/// @brief 快排
 template <> class Solution<1> {
 public:
   int findKthLargest(vector<int> &nums, int k) {
@@ -12,7 +13,7 @@ public:
   }
 };
 
-/// 堆排序
+/// @brief 堆排序
 template <> class Solution<2> {
 public:
   int findKthLargest(vector<int> &nums, int k) {
@@ -43,31 +44,28 @@ public:
   }
 };
 
-/// 快速选择
+/// @brief quick select
 template <> class Solution<2> {
 public:
-  int findKthLargest(vector<int> &nums, int k) {
-    return quickSelect(nums, 0, nums.size() - 1, nums.size() - k);
-  }
-  int quickSelect(vector<int> &nums, int l, int r, int k) {
-    int q = randomPartition(nums, l, r);
-    if (q == k)
-      return nums[q];
-    return q < k ? quickSelect(nums, q + 1, r, k)
-                 : quickSelect(nums, l, q - 1, k);
-  }
-  int randomPartition(vector<int> &nums, int l, int r) {
-    int idx = rand() % (r - l + 1) + l;
-    swap(nums[idx], nums[r]);
-    return partition(nums, l, r);
-  }
-  int partition(vector<int> &nums, int l, int r) {
-    int x = nums[r], k = l;
-    for (int i = l; i < r; ++i) {
-      if (nums[i] < x)
-        swap(nums[k++], nums[i]);
+  int partition(vector<int> &nums, int l, int r, int pivot) {
+    swap(nums[pivot], nums[r]);
+    int ptr = l;
+    for (int i = l; i <= r; ++i) {
+      if (nums[i] > nums[r])
+        swap(nums[i], nums[ptr++]);
     }
-    swap(nums[k], nums[r]);
-    return k;
+    swap(nums[ptr], nums[r]);
+    return ptr;
+  }
+  int quick_select(vector<int> &nums, int l, int r, int k) {
+    int pivot = rand() % (r - l + 1) + l;
+    int x = partition(nums, l, r, pivot);
+    if (x == k - 1)
+      return nums[x];
+    return x < k - 1 ? quick_select(nums, x + 1, r, k)
+                     : quick_select(nums, l, x - 1, k);
+  }
+  int findKthLargest(vector<int> &nums, int k) {
+    return quick_select(nums, 0, nums.size() - 1, k);
   }
 };
