@@ -9,45 +9,48 @@ struct ListNode {
 
 template <int> class Solution;
 
-/// 迭代
+/// @brief 迭代
 template <> class Solution<1> {
 public:
   ListNode *reverseKGroup(ListNode *head, int k) {
     ListNode *dummy = new ListNode(-1), *prev = dummy;
-    dummy->next = head;
-    int count = 1;
-    while (head) {
-      if (count % k == 0) {
-        ListNode *next = head->next;
-        head->next = nullptr;
-        ListNode *node = reverse(prev->next);
-        ListNode *tmp = prev->next;
-        prev->next = node;
-        prev = tmp;
-        prev->next = next;
-        head = next;
-      } else {
-        head = head->next;
+    ListNode *cur = head;
+    // 计算链表长度
+    int len = 0;
+    while (cur) {
+      ++len;
+      cur = cur->next;
+    }
+    // 头插法. 只要链表长度大于等于 k 或者 head != nullptr 就继续遍历
+    while (head && len >= k) {
+      ListNode *node = head;
+      for (int i = 0; i < k && head; ++i) {
+        ListNode *tmp = head->next;
+        head->next = prev->next;
+        prev->next = head;
+        head = tmp;
       }
-      ++count;
+      len -= k;
+      prev = node;
     }
+    prev->next = head;
     return dummy->next;
-  }
-  ListNode *reverse(ListNode *head) {
-    ListNode *prev = nullptr;
-    while (head) {
-      ListNode *next = head->next;
-      head->next = prev;
-      prev = head;
-      head = next;
-    }
-    return prev;
   }
 };
 
-/// 递归
+/// @brief 递归
 template <> class Solution<2> {
 public:
+  ListNode *reverse(ListNode *left, ListNode *right) {
+    ListNode *dummy = new ListNode(-1);
+    while (left != right) {
+      ListNode *tmp = left->next;
+      left->next = dummy->next;
+      dummy->next = left;
+      left = tmp;
+    }
+    return dummy->next;
+  }
   ListNode *reverseKGroup(ListNode *head, int k) {
     ListNode *left = head, *right = head;
     int n = k;
@@ -59,16 +62,5 @@ public:
     ListNode *node = reverse(left, right);
     left->next = reverseKGroup(right, k);
     return node;
-  }
-  ListNode *reverse(ListNode *left, ListNode *right) {
-    ListNode *dummy = new ListNode(-1), *tmp = left;
-    ;
-    while (left != right) {
-      ListNode *next = left->next;
-      left->next = dummy->next;
-      dummy->next = left;
-      left = next;
-    }
-    return dummy->next;
   }
 };
