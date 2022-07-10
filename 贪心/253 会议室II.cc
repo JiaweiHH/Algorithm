@@ -4,24 +4,23 @@ using namespace std;
 
 template <int> class Solution;
 
-/// 优先队列
+/// @brief 堆
 template <> class Solution<1> {
 public:
   int minMeetingRooms(vector<vector<int>> &intervals) {
     sort(intervals.begin(), intervals.end(),
-         [](vector<int> &lhs, vector<int> &rhs) {
-           if (lhs[0] == rhs[0])
-             return lhs[1] < rhs[1];
-           return lhs[0] < rhs[0];
-         });
-    priority_queue<int, vector<int>, greater<int>> q;
-    int res = 0;
-    for (int i = 0; i < intervals.size(); ++i) {
-      if (q.empty() || intervals[i][0] < q.top())
-        res++;
-      else
-        q.pop();
-      q.push(intervals[i][1]);
+         [](vector<int> &lhs, vector<int> &rhs) { return lhs[0] < rhs[0]; });
+    // que 记录当前正在执行的会议的结束之间
+    priority_queue<int, vector<int>, greater<int>> que;
+    que.push(intervals[0][1]); // 第一个会议先开始
+    size_t res = 1;
+    for (int i = 1; i < intervals.size(); ++i) {
+      // 弹出所有已经结束的会议
+      while (!que.empty() && que.top() <= intervals[i][0]) {
+        que.pop();
+      }
+      que.push(intervals[i][1]);
+      res = max(res, que.size());
     }
     return res;
   }
@@ -51,24 +50,20 @@ public:
   }
 };
 
+/// @brief 扫描线
 template <> class Solution<3> {
 public:
   int minMeetingRooms(vector<vector<int>> &intervals) {
-    vector<pair<int, int>> meeting;
+    vector<pair<int, int>> vec;
     for (int i = 0; i < intervals.size(); ++i) {
-      meeting.push_back({intervals[i][0], 1});
-      meeting.push_back({intervals[i][1], -1});
+      vec.push_back({intervals[i][0], 1});
+      vec.push_back({intervals[i][1], -1});
     }
-    sort(meeting.begin(), meeting.end(),
-         [](const pair<int, int> &lhs, const pair<int, int> &rhs) {
-           if (lhs.first == rhs.first)
-             return lhs.second < rhs.second;
-           return lhs.first < rhs.first;
-         });
-    int res = 0, count;
-    for (int i = 0; i < meeting.size(); ++i) {
-      count += meeting[i].second;
-      res = max(res, count);
+    sort(vec.begin(), vec.end());
+    int res = 1, cnt = 0;
+    for (int i = 0; i < vec.size(); ++i) {
+      cnt += vec[i].second;
+      res = max(res, cnt);
     }
     return res;
   }

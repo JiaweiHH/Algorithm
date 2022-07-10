@@ -199,7 +199,7 @@ $$
 
 [977. 有序数组的平方 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/squares-of-a-sorted-array/)：给你一个按非递减顺序排序的整数数组 `nums`，返回每个数字平方之后组成的新数组，要求新数组也要按照非递减顺序排序。要求时间复杂度 `O(n)`。👉 [<u>有序数组的平方</u>](双指针/977%20有序数组的平方.cc)
 
-首先找到数组中绝对值最小的元素 `idx`，然后让 `left` 指针从 `idx - 1` 开始，`right` 指针从 `idx` 开始。不断的将 `left` 和 `right` 中绝对值较小的元素的平方放入 `res` 数组中
+双指针分别从第一个元素和最后一个元素出发
 
 [986. 区间列表的交集 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/interval-list-intersections/)：给出两个由闭区间去成的列表，返回两个链表中区间的交集。👉 [区间列表的交集](双指针/986%20区间列表的交集.cc)
 

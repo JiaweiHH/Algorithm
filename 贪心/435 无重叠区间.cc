@@ -7,26 +7,22 @@ template <int> class Solution;
 
 /// @brief 给定 n 个区间，找到需要移除的最小区间数量，使得剩余的区间互不重叠
 
-/// @brief 贪心
-/// 将 n 个区间按照起始位置从小到大排序，然后每次从前一个区间的右端点出发寻找下一个左端点在其右侧的区间，记录所有找到的区间的数量
-/// 按照右边界排序的原因在于，这样在选择下一个区间的时候可以腾出尽可能多的空间，从而在该空间内能够尽可能多的放区间
-/// 初始的第一个区间可以看成上一个区间选择了 intervals[0][0] 为右边界的区间
-/// 最后返回 n - count 就是需要移除的区间数量
-/// @note 时间复杂度：O(nlogn)，空间复杂度：O(logn)
-template <> class Solution<0> {
+/// @brief 转化为 452.用最少的箭引爆气球
+/// 求出需要射出的箭的数量，返回 intervals.size() - cnt
+template <> class Solution<1> {
 public:
   int eraseOverlapIntervals(vector<vector<int>> &intervals) {
     sort(intervals.begin(), intervals.end(),
-         [](const vector<int> &lhs, const vector<int> &rhs) {
-           return lhs[1] < rhs[1];
-         });
-    int end = intervals[0][1], count = 1;
+         [](vector<int> &lhs, vector<int> &rhs) { return lhs[0] < rhs[0]; });
+    int cnt = 1, r = intervals[0][1];
     for (int i = 1; i < intervals.size(); ++i) {
-      if (intervals[i][0] >= end) {
-        end = intervals[i][1];
-        ++count;
+      if (intervals[i][0] >= r) {
+        ++cnt;
+        r = intervals[i][1];
+      } else {
+        r = min(r, intervals[i][1]);
       }
     }
-    return intervals.size() - count;
+    return intervals.size() - cnt;
   }
 };

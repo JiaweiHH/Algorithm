@@ -30,12 +30,10 @@ public:
 template <> class Solution<2> {
 public:
   void merge(vector<int> &nums1, int m, vector<int> &nums2, int n) {
-    int p1 = m - 1, p2 = n - 1, tail = m + n - 1;
-    while (p1 >= 0 && p2 >= 0)
-      nums1[tail--] = nums1[p1] > nums2[p2] ? nums1[p1--] : nums2[p2--];
-    if (p1 >= 0)
-      return;
-    while (p2 >= 0)
-      nums1[tail--] = nums2[p2--];
+    int pA = m - 1, pB = n - 1, pC = m + n - 1;
+    while (pA >= 0 && pB >= 0)
+      nums1[pC--] = nums1[pA] >= nums2[pB] ? nums1[pA--] : nums2[pB--];
+    while (pB >= 0)
+      nums1[pC--] = nums2[pB--];
   }
 };

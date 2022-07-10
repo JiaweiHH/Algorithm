@@ -5,23 +5,24 @@ class Solution {
 public:
   vector<vector<int>> intervalIntersection(vector<vector<int>> &firstList,
                                            vector<vector<int>> &secondList) {
-    int l = 0, r = 0;
     vector<vector<int>> res;
-    while (l != firstList.size() && r != secondList.size()) {
-      if (firstList[l][1] < secondList[r][1]) {
-        if (firstList[l][0] >= secondList[r][0])
-          res.push_back({firstList[l][0], firstList[l][1]});
-        else if (firstList[l][0] <= secondList[r][0] &&
-                 firstList[l][1] >= secondList[r][0])
-          res.push_back({secondList[r][0], firstList[l][1]});
-        ++l;
+    int pA = 0, pB = 0;
+    int start = -1, end = -1;
+    while (pA != firstList.size() && pB != secondList.size()) {
+      if (firstList[pA][1] < secondList[pB][1]) {
+        if (firstList[pA][0] >= secondList[pB][0])
+          res.push_back({firstList[pA][0], firstList[pA][1]});
+        else if (firstList[pA][0] <= secondList[pB][0] &&
+                 secondList[pB][0] <= firstList[pA][1])
+          res.push_back({secondList[pB][0], firstList[pA][1]});
+        ++pA;
       } else {
-        if (secondList[r][0] >= firstList[l][0])
-          res.push_back({secondList[r][0], secondList[r][1]});
-        else if (secondList[r][0] <= firstList[l][0] &&
-                 secondList[r][1] >= firstList[l][0])
-          res.push_back({firstList[l][0], secondList[r][1]});
-        ++r;
+        if (secondList[pB][0] >= firstList[pA][0])
+          res.push_back({secondList[pB][0], secondList[pB][1]});
+        else if (secondList[pB][0] <= firstList[pA][0] &&
+                 firstList[pA][0] <= secondList[pB][1])
+          res.push_back({firstList[pA][0], secondList[pB][1]});
+        ++pB;
       }
     }
     return res;

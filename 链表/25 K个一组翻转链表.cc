@@ -55,6 +55,7 @@ public:
     ListNode *left = head, *right = head;
     int n = k;
     while (n--) {
+      // 这里直接返回很关键，这样在不满足 k 个元素的时候就不需要翻转了
       if (right == nullptr)
         return head;
       right = right->next;

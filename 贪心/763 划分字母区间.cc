@@ -18,19 +18,13 @@ public:
     for (int i = 0; i < s.size(); ++i)
       map[s[i]] = i;
     vector<int> res;
-    for (int i = 0; i < s.size();) {
-      int end = map[s[i]];
-      // 遍历 i + 1 到 end 之间的所有字符，确定一个字符串片段
-      for (int j = i + 1; j <= end; ++j) {
-        // 如果 map[s[j]] > end，由于 j 已经被包含在片段内部了，因此 end
-        // 必须要扩展到 map[s[j]]
-        if (map[s[j]] > end)
-          end = map[s[j]];
-      }
-      // 更新片段长度
-      res.push_back(end - i + 1);
-      // 下一个片段的开始位置是 end + 1
-      i = end + 1;
+    int i = 0;
+    while (i != s.size()) {
+      int k = map[s[i]];
+      for (int j = i + 1; j <= k; ++j)
+        k = max(k, map[s[j]]);
+      res.push_back(k - i + 1);
+      i = k + 1;
     }
     return res;
   }
@@ -40,29 +34,23 @@ public:
 template <> class Solution<2> {
 public:
   vector<int> partitionLabels(string s) {
-    // 获取每个字符所有出现的位置
     unordered_map<char, vector<int>> map;
     for (int i = 0; i < s.size(); ++i)
       map[s[i]].push_back(i);
-    // 提取出每个字符第一次和最后一次出现的位置
-    vector<pair<int, int>> vec;
-    for (auto &[key, val] : map)
-      vec.push_back({val[0], val[val.size() - 1]});
-    // 贪心，类似于合并区间算法
-    sort(vec.begin(), vec.end(),
-         [](const pair<int, int> &lhs, const pair<int, int> &rhs) {
-           if (lhs.first == rhs.first)
-             return lhs.second < rhs.second;
-           return lhs.first < rhs.first;
-         });
-    int len = 0, l = vec[0].first, r = vec[0].second;
+    vector<pair<int, int>> intervals;
+    // 提取每个字符出现的第一个和最后一个位置，作为区间
+    for (auto [key, val] : map)
+      intervals.push_back({val.front(), val.back()});
+    // 区间合并
+    sort(intervals.begin(), intervals.end());
     vector<int> res;
-    for (auto &[s, e] : vec) {
-      if (s > r) {
+    int l = intervals[0].first, r = intervals[0].second;
+    for (int i = 1; i < intervals.size(); ++i) {
+      if (intervals[i].first > r) {
         res.push_back(r - l + 1);
-        l = s;
+        l = intervals[i].first;
       }
-      r = max(r, e);
+      r = max(r, intervals[i].second);
     }
     res.push_back(r - l + 1);
     return res;

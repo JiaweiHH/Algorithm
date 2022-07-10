@@ -888,3 +888,67 @@ public:
 
 [121.买卖股票的最佳时机](https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock/)：👉 [<u>买卖股票的最佳时机</u>](动态规划/股票问题/121%20买卖股票最佳时机.cc)
 
+## 其他
+
+### 区间问题
+
+- [986.区间列表交集](https://leetcode.cn/problems/interval-list-intersections/)(求两个区间集合里面的区间交集)：比较两个区间的结尾元素，确定交集区间的尾元素，`list[pA][1] < list[pB][1]` -> `list[pA][1]`；然后进一步判断两个区间是否是相交的/包含的/不相交的，`firstList[pA][0] >= secondList[pB][0]` -> 包含关系，`firstList[pA][0] <= secondList[pB][0] && secondList[pB][0] <= firstList[pA][1]` -> 相交关系，其他 -> 不相交
+- [56.合并区间](https://leetcode.cn/problems/merge-intervals/)(合并一组区间集合里面的所有区间，相交的两个区间都需要合并)：1. 对区间按照起始位置排序，起始位置相同的按照结束位置排序；2. 顺序遍历所有区间，记录当前合并的 `l` 和 `r`，当 `intervals[i][1] > r` 的时候说明此时的区间和前面的区间不相交，保存 `[l, r]`。其余时候说明区间相交，更新 `r = max(r, intervals[i][1])`
+- [57.插入区间](https://leetcode.cn/problems/insert-interval/)(往一个有序的且没有交集的区间集合中插入一个新的区间，要求有交集的都需要合并)：遍历有序区间集合，1. 如果 `intervals[i]` 在 `newInterval` 左侧则直接插入；2. `intervals[i]` 在 `newInterval` 右侧，这个时候需要判断 `newInterval` 是否被插入过，没有插入过的话则先将 `newInterval` 插入，然后再插入 `intervals[i]`；3. `intervals[i]` 和 `newInterval` 有交集，这个时候可以看做在当前点插入了 `newInterval`，后续的处理按照 56 题的方式处理后续所有区间就可以了，更新 `placed = true`；最后遍历完毕的时候，记住要判断 `newInterval` 是否被插入过，如果没有被插入过需要将它插入到 `res` 中
+- [759.员工空闲时间](https://leetcode.cn/problems/employee-free-time/)(找出所有不和每个区间集合中的所有区间相交的区间)
+  - 方法一：优先队列保存每个工人的当前工作区间，按照开始时间排序，例如 {i, j} 表示第 i 个工人的第 j 个工作时间。cur_time 记录当前已经扫描到的时间，cur_time 之前的所有时间都已经被判断过了，要么是大家的空闲时间要么不是。每次从堆中弹出 {i, j}，如果第 i 个工人的第 j 个工作时间的开始时间 start > cur_time，则可以保证 [cur_time, start] 是所有人的空闲时间。因为后续还没有被检查的工作时间的开始时间比定大于 start，也就不存在与 [cur_time, start] 相交的情况了，即这段区间是不和任何区间相交的区间。判断结束 {i, j} 之后往堆中放入 {i, j + 1}
+  - 方法二：扫描线。将所有的时间离散化，开始时间打上标签 1，结束时间打上标签 -1，使用计数值 `cnt` 记录当前的累加值。顺序遍历所有的时间，如果 `cnt == 0 && cur_time != prev_time` 则说明 `[prev_time, cur_time]` 是空闲时间
+- [352.将数据流变为多个不相交区间](https://leetcode.cn/problems/data-stream-as-disjoint-intervals/)(数据流是一个个单独的数字，getIntervals 的时候将数字转换为区间)：
+  - 方法一：使用有序映射 map，map 中保存当前所有不相交的区间，`addNum()` 添加元素的时候需要通过二分查找找到第一个大于 `val` 的区间 `next`（`next` 的前一个区间记为 `prev`），然后判断 1. `val` 是否在 `next` 里面；2. `val` 能否和 `prev` 和 `next` 合并；3. `val` 能否和 `next` 合并；4. `val` 能否和 `prev` 合并；5. `val` 不能将当前的区间合并，因此只能插入一个新的区间 `[val, val]`。`getInterval()` 函数遍历 map 获取所有区间即可
+  - 方法二：使用堆保存所有不相交的区间。`addNum()` 的时候只需要往堆中添加 `[val, val]` 即可。`getInterval` 的时候对堆中的所有区间判断进行合并，并将合并的到的新区间保存到一个新的堆中，最后将新的堆拷贝到旧的堆
+- [228.汇总区间](https://leetcode.cn/problems/summary-ranges/)(352题的简化版本)：顺序遍历数组即可，合并的代码或许和 352题 中堆方法的合并类似
+- [163.缺失的区间](https://leetcode.cn/problems/missing-ranges/)(和 228题 相反，找出数组中不包含的区间)：使用 `l + 1` 记录当前可能不包含的区间的左边界，遍历 `nums`，如果 `nums[i] > l + 1` 说明 `nums[i]` 和 `l + 1` 之间出现了「断层」，此时 `[l + 1, nums[i] - 1]` 就是不包含的区间。每次遍历 `nums[i]` 都更新 `l = nums[i]`。注意最后需要判断 `l < upper`，如果满足条件的话需要将 `[l + 1, upper]` 保存到 `res` 中
+- [436.寻找右区间](https://leetcode.cn/problems/find-right-interval/)(查找区间数组中每个区间的右侧区间所在的下标)：将所有区间的 `start` 和区间的下标 `i` 保存到数组 `vec` 中，然后对数组按照 `start` 排序。遍历每个 interval，二分查找找到 `vec` 中满足 `start >= interval[1]` 的元素，这个元素对应的 `i` 就是在原数组中的下标
+- [252.会议室](https://leetcode.cn/problems/meeting-rooms/)(判断一个人能否参加所有会议，即区间是否有相交的问题)：区间按照 start 从小到大排序，顺序遍历所有 intervals，如果出现 `intervals[i][0] < intervals[i - 1][1]` 则返回 false，否则遍历结束之后返回 true
+- [253.会议室II](https://leetcode.cn/problems/meeting-rooms-ii/)(判断同一时刻最多有多少个区间相交)
+  - 方法一：扫描线，和 759题 的方法二相同。将所有的区间时间都打上标签，开始时间打上 1，结束时间打上 -1，将时间排好序。然后顺序遍历所有时间，遍历过程中累加值 `cnt` 的最大值就是最多相交的区间数量
+  - 方法二：堆。对所有 intervals 按照开始时间排序，使用堆记录当前正在执行的所有会议的结束时间，从小到大排序。遍历 intervals，首先从堆中弹出所有结束时间在 `intervals[i][0]` 之前的会议，然后将 `intervals[i]` 的结束时间放入堆中，最后统计当前正在执行会议的数量，更新 `res = max(res, que.size())`
+  - 本题类似的题目还有 [1094.拼车](https://leetcode.cn/problems/car-pooling/)，同样的扫描线做法
+- [452.用最少数量的箭引爆气球](https://leetcode.cn/problems/minimum-number-of-arrows-to-burst-balloons/)(区间相交问题，可以换成求 intervals 中的所有交集 -> 求交集可以排序之后两两求交集)：贪心思想是尽量从靠左边射出箭来引爆更多的气球，例如 [1, 5], [2, 9], [3, 7] 选择从 5 射出箭
+- [435.无重叠区间](https://leetcode.cn/problems/non-overlapping-intervals/)(移除最少的区间，使得剩余的区间都不相交)：转化为 452题，求出需要射出的箭的数量（即在某个范围内满足尽可能多的区间相交，有多少个这样的范围），然后返回 `intervals.size() - cnt`
+
+
+```c++
+// 452.用最少数量的箭引爆气球
+class Solution {
+public:
+  int findMinArrowShots(vector<vector<int>> &points) {
+    sort(points.begin(), points.end(),
+         [](vector<int> &lhs, vector<int> &rhs) { return lhs[0] < rhs[0]; });
+    // r 表示下一发箭准备射的位置
+    int res = 1, r = points[0][1];
+    for (int i = 1; i < points.size(); ++i) {
+      if (points[i][0] > r) {
+        // r 这支箭已经不能继续引爆新的气球了，射出一支新的箭
+        ++res;
+        r = points[i][1];
+      } else {
+        // 当前区间在 r 内部，更新之前射出的位置，尽可能的小
+        r = min(r, points[i][1]);
+      }
+    }
+    return res;
+  }
+};
+```
+
+```python
+# 求交集的算法
+class Solution:
+  def findMinArrowShots(self, points: List[List[int]]) -> int:
+    points.sort()
+    i = 1
+    while i < len(points):
+      (al, ar), (bl, br) = points[i - 1], points[i]
+      if bl <= ar:
+          points[i - 1] = bl, min(ar, br)
+          points.pop(i)
+      else:
+          i += 1
+    return len(points)
+```

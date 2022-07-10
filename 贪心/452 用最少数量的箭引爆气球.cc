@@ -12,18 +12,17 @@ class Solution {
 public:
   int findMinArrowShots(vector<vector<int>> &points) {
     sort(points.begin(), points.end(),
-         [](const vector<int> &lhs, const vector<int> &rhs) {
-           return lhs[0] < rhs[0] || (lhs[0] == rhs[0] && lhs[1] < rhs[1]);
-         });
-    int begin = points[0][0], end = points[0][1];
-    int res = 1;
+         [](vector<int> &lhs, vector<int> &rhs) { return lhs[0] < rhs[0]; });
+    // r 表示下一发箭准备射的位置
+    int res = 1, r = points[0][1];
     for (int i = 1; i < points.size(); ++i) {
-      begin = points[i][0];
-      if (points[i][0] > end) {
-        res++;
-        end = points[i][1];
-      } else if (points[i][1] < end) {
-        end = points[i][1];
+      if (points[i][0] > r) {
+        // r 这支箭已经不能继续引爆新的气球了，射出一支新的箭
+        ++res;
+        r = points[i][1];
+      } else {
+        // 当前区间在 r 内部，更新之前射出的位置，尽可能的小
+        r = min(r, points[i][1]);
       }
     }
     return res;
