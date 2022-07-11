@@ -14,56 +14,50 @@ struct TreeNode {
 
 template <int> class Solution;
 
-/// 迭代
+/// @brief 队列迭代
 template <> class Solution<1> {
 public:
   vector<vector<int>> levelOrder(TreeNode *root) {
-    if (root == nullptr)
-      return {};
     vector<vector<int>> res;
     queue<TreeNode *> que;
-    que.push(root);
-    int len = 1;
+    if (root)
+      que.push(root);
     while (!que.empty()) {
-      vector<int> tmp;
-      int tmp_len = 0;
+      int len = que.size();
+      vector<int> vec;
       for (int i = 0; i < len; ++i) {
         TreeNode *node = que.front();
         que.pop();
-        tmp.push_back(node->val);
-        if (node->left) {
+        vec.push_back(node->val);
+        if (node->left)
           que.push(node->left);
-          tmp_len++;
-        }
-        if (node->right) {
+        if (node->right)
           que.push(node->right);
-          tmp_len++;
-        }
       }
-      len = tmp_len;
-      if (tmp.size() > 0)
-        res.push_back(tmp);
+      res.emplace_back(std::move(vec));
     }
     return res;
   }
 };
 
-/// 递归
+/// @brief 前序遍历递归
 template <> class Solution<2> {
 public:
   vector<vector<int>> res;
-  vector<vector<int>> levelOrder(TreeNode *root) {
-    dfs(root, 0);
-    return res;
-  }
-  void dfs(TreeNode *root, int level) {
+  void dfs(TreeNode *root, int depth) {
     if (root == nullptr)
       return;
-    if (res.size() == level)
-      res.push_back({root->val});
+    // 通过 res.size() 判断是 emplace 一个新的 vector<> 还是直接使用
+    if (res.size() > depth)
+      res[depth].push_back(root->val);
     else
-      res[level].push_back(root->val);
-    dfs(root->left, level + 1);
-    dfs(root->right, level + 1);
+      res.push_back({root->val});
+    dfs(root->left, depth + 1);
+    dfs(root->right, depth + 1);
+  }
+  vector<vector<int>> levelOrder(TreeNode *root) {
+    // 携带二叉树深度信息
+    dfs(root, 0);
+    return res;
   }
 };

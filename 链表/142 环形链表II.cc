@@ -1,6 +1,10 @@
 #include <vector>
 using namespace std;
 
+/// @brief 如果需要计算环中节点的数量，在找到环的入口之后，
+/// 快慢指针一起从入口出发，再次相遇的时候，
+/// 「快指针走过的节点数量 - 慢指针走过的节点数量」就是环的节点数量
+
 // Definition for singly-linked list.
 struct ListNode {
   int val;
@@ -11,21 +15,20 @@ struct ListNode {
 class Solution {
 public:
   ListNode *detectCycle(ListNode *head) {
-    if (head == nullptr || head->next == nullptr)
+    if (head == nullptr)
       return nullptr;
-    ListNode *slow = head, *fast = head->next;
-    while (slow != fast) {
-      if (fast == nullptr || fast->next == nullptr)
-        return nullptr;
-      slow = slow->next;
-      fast = fast->next->next;
+    ListNode *pA = head, *pB = head->next;
+    while (pB && pB->next && pA != pB) {
+      pA = pA->next;
+      pB = pB->next->next;
     }
-    slow = head;
-    fast = fast->next;
-    while (slow != fast) {
-      slow = slow->next;
-      fast = fast->next;
+    if (pA != pB)
+      return nullptr;
+    pA = head, pB = pB->next;
+    while (pA != pB) {
+      pA = pA->next;
+      pB = pB->next;
     }
-    return slow;
+    return pA;
   }
 };

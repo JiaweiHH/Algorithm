@@ -16,34 +16,27 @@ struct TreeNode {
 class Solution {
 public:
   vector<vector<int>> zigzagLevelOrder(TreeNode *root) {
-    if (!root)
-      return {};
     vector<vector<int>> res;
-    queue<TreeNode *> q;
-    q.push(root);
-    int len = 1;
-    bool flag = false;
-    while (!q.empty()) {
-      int tmpLen = 0;
-      vector<int> curr;
+    queue<TreeNode *> que;
+    if (root)
+      que.push(root);
+    bool tag = true;
+    while (!que.empty()) {
+      int len = que.size();
+      vector<int> tmp;
       for (int i = 0; i < len; ++i) {
-        TreeNode *node = q.front();
-        q.pop();
-        curr.push_back(node->val);
-        if (node->left) {
-          tmpLen++;
-          q.push(node->left);
-        }
-        if (node->right) {
-          tmpLen++;
-          q.push(node->right);
-        }
+        TreeNode *node = que.front();
+        que.pop();
+        tmp.push_back(node->val);
+        if (node->left)
+          que.push(node->left);
+        if (node->right)
+          que.push(node->right);
       }
-      if (flag)
-        reverse(curr.begin(), curr.end());
-      res.push_back(curr);
-      flag = !flag;
-      len = tmpLen;
+      if (!tag)
+        reverse(tmp.begin(), tmp.end());
+      res.push_back(tmp);
+      tag = !tag;
     }
     return res;
   }

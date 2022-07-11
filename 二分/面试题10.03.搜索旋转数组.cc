@@ -7,32 +7,26 @@ template <int> class Solution;
 template <> class Solution<1> {
 public:
   int search(vector<int> &arr, int target) {
-    int n = arr.size();
-    // 找到旋转位置下标
-    int l = 0, r = n - 1, start_idx = 0;
-    while (l <= r) {
+    // 1. 找到数组的旋转位置
+    int l = 0, r = arr.size() - 1, idx = 0;
+    while (l < r) {
       int mid = (l + r) / 2;
       if (arr[mid] > arr[r])
         l = mid + 1;
       else if (arr[mid] < arr[r]) {
-        start_idx = max(start_idx, r + 1);
+        idx = max(idx, r + 1); // idx 记录可能的下标位置
         r = mid;
-      } else {
+      } else
         --r;
-      }
     }
-    start_idx = start_idx == n || arr[start_idx] != arr[l] ? l : start_idx;
-    // 确定 target 的搜索区间
-    if (start_idx == 0)
-      l = 0, r = n - 1;
-    else {
-      if (target < arr[0])
-        l = start_idx, r = n - 1;
-      else
-        l = 0, r = start_idx - 1;
-    }
-    int bound = r + 1;
-    // 二分搜索 target
+    // 注意只有当 idx == n 或者 arr[idx] != arr[r] 的时候才使用 r. 
+    // 否则就使用 idx
+    idx = idx == arr.size() || arr[idx] != arr[r] ? r : idx;
+    // 2. 找到 target
+    if (target >= arr[0])
+      l = 0, r = idx - 1;
+    else
+      l = idx, r = arr.size() - 1;
     while (l <= r) {
       int mid = (l + r) / 2;
       if (arr[mid] >= target)
@@ -40,7 +34,7 @@ public:
       else
         l = mid + 1;
     }
-    return l == bound || arr[l] != target ? -1 : l;
+    return l == arr.size() || arr[l] != target ? -1 : l;
   }
 };
 

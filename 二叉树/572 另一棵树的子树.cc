@@ -11,21 +11,23 @@ struct TreeNode {
 
 class Solution {
 public:
-  bool is_same(TreeNode *root, TreeNode *subRoot) {
-    if (root == nullptr && subRoot == nullptr)
+  bool isSameTree(TreeNode *p, TreeNode *q) {
+    if (p == nullptr && q == nullptr)
       return true;
-    if ((!root && subRoot) || (root && !subRoot) || (root->val != subRoot->val))
+    if (!p || !q || p->val != q->val)
       return false;
-    return is_same(root->left, subRoot->left) &&
-           is_same(root->right, subRoot->right);
+    return isSameTree(p->left, q->left) && isSameTree(p->right, q->right);
   }
   bool isSubtree(TreeNode *root, TreeNode *subRoot) {
-    if (root == nullptr && subRoot == nullptr)
+    if (subRoot == nullptr)
       return true;
     if (root == nullptr && subRoot)
       return false;
-    if (root->val == subRoot->val && is_same(root, subRoot))
+    // 找到 root->val == subRoot->val 的节点，然后判断这两棵树是不是相同的
+    if (root->val == subRoot->val && isSameTree(root, subRoot))
       return true;
+    // root->val != subRoot->val 或者 root 和 subRoot 不相同, 继续判断 root
+    // 的左右子树
     return isSubtree(root->left, subRoot) | isSubtree(root->right, subRoot);
   }
 };

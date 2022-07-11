@@ -9,7 +9,7 @@ public:
       int mid = (l + r) / 2;
       if (nums[mid] > nums[r])
         l = mid + 1;
-      else
+      else // nums[mid] <= nums[r], mid 有可能是最小值
         r = mid;
     }
     return nums[l];

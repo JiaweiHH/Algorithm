@@ -3,21 +3,22 @@ using namespace std;
 
 template <int> class Solution;
 
-/// 二分
+/// @brief 二分查找
+/// 如果重复数字为 x，则所有 n >= x 的数字来说，小于等于 n 的数字数量必定大于 n
+/// 利用这个单调性来找到重复的数字
 template <> class Solution<1> {
 public:
-  int count(vector<int> &nums, int target) {
+  int check(vector<int> &nums, int target) {
     int cnt = 0;
-    for (auto &v : nums)
-      cnt += v <= target ? 1 : 0;
+    for (auto n : nums)
+      cnt += n <= target ? 1 : 0;
     return cnt;
   }
   int findDuplicate(vector<int> &nums) {
-    int n = nums.size() - 1;
-    int l = 1, r = n;
+    int l = 1, r = nums.size() - 1;
     while (l <= r) {
       int mid = (l + r) / 2;
-      if (count(nums, mid) > mid)
+      if (check(nums, mid) > mid)
         r = mid - 1;
       else
         l = mid + 1;
