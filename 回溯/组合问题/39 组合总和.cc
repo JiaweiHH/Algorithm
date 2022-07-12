@@ -1,58 +1,31 @@
 #include <vector>
 using namespace std;
 
-template <int> class Solution;
+/// @brief 取出重复有多种方法
+/// 1. 排序之后，!tmp.empty() && candidates[i] == tmp.back()
+/// 2. 可以不需要排序，利用子集的方式保证后续回溯只能从前一个回溯的元素开始查找
 
-template <> class Solution<1> {
+class Solution {
 public:
   vector<vector<int>> res;
-  vector<vector<int>> combinationSum(vector<int> &candidates, int target) {
-    sort(candidates.begin(), candidates.end());
-    vector<int> tmp;
-    dfs(candidates, 0, tmp, target);
-    return res;
-  }
-  void dfs(const vector<int> &candidates, int sum, vector<int> &tmp,
-           const int &target) {
-    if (sum == target) {
+  void dfs(vector<int> &candidates, vector<int> &tmp, int target, int cnt,
+           int idx) {
+    if (cnt == target) {
       res.push_back(tmp);
       return;
     }
-    for (const auto &n : candidates) {
-      // 避免往前选，出现重复的排列
-      if (!tmp.empty() && n < *(tmp.end() - 1))
-        continue;
-      if (sum + n <= target) {
-        tmp.push_back(n);
-        dfs(candidates, sum + n, tmp, target);
-        tmp.pop_back();
-      } else {
+    for (int i = idx; i < candidates.size(); ++i) {
+      if (cnt + candidates[i] > target)
         break;
-      }
+      tmp.push_back(candidates[i]);
+      dfs(candidates, tmp, target, cnt + candidates[i], i);
+      tmp.pop_back();
     }
   }
-};
-
-template <> class Solution<2> {
-public:
-  vector<vector<int>> res;
   vector<vector<int>> combinationSum(vector<int> &candidates, int target) {
-    vector<int> cur;
-    dfs(candidates, cur, target, 0, 0);
+    vector<int> tmp;
+    sort(candidates.begin(), candidates.end());
+    dfs(candidates, tmp, target, 0, 0);
     return res;
-  }
-  void dfs(const vector<int> &candidates, vector<int> &cur, int target,
-           int index, int sum) {
-    if (sum == target) {
-      res.push_back(cur);
-      return;
-    }
-    for (int i = index; i < candidates.size(); ++i) {
-      if (sum + candidates[i] <= target) {
-        cur.push_back(candidates[i]);
-        dfs(candidates, cur, target, i, sum + candidates[i]);
-        cur.pop_back();
-      }
-    }
   }
 };

@@ -19,8 +19,7 @@ class Solution {};
 /// 即从柱子 i 左侧最高的柱子和柱子 i + 1 的高度比较得到柱子 i + 1 左侧的最高柱子
 /// 
 /// @note 时间复杂度：O(n), 空间复杂度：O(n)
-template <>
-class Solution<1> {
+template <> class Solution<1> {
 public:
   int trap(vector<int> &height) {
     int n = height.size();
@@ -52,8 +51,7 @@ public:
 /// 在对下标 i 计算完成之后，将 i 入栈，继续遍历后续的下标
 /// 
 /// @note 时间复杂度：O(n)，空间复杂度：O(n)
-template <>
-class Solution<2> {
+template <> class Solution<2> {
 public:
   int trap(vector<int> &height) {
     stack<int> stack;
@@ -74,24 +72,22 @@ public:
 };
 
 /// @brief 使用双指针优化动态规划算法，空间复杂度降低为 O(1)
-template <>
-class Solution<3> {
+template <> class Solution<3> {
 public:
   int trap(vector<int> &height) {
-    int ans = 0;
-    int left = 0, right = height.size() - 1;
-    int leftMax = 0, rightMax = 0;
-    while (left < right) {
-      leftMax = max(leftMax, height[left]);
-      rightMax = max(rightMax, height[right]);
-      if (height[left] < height[right]) {
-        ans += leftMax - height[left];
-        ++left;
+    int l = 0, r = height.size() - 1, res = 0;
+    int leftMax = height[0], rightMax = height[height.size() - 1];
+    while (l != r) {
+      if (height[l] < height[r]) {
+        res += leftMax - height[l];
+        ++l;
       } else {
-        ans += rightMax - height[right];
-        --right;
+        res += rightMax - height[r];
+        --r;
       }
+      leftMax = max(leftMax, height[l]);
+      rightMax = max(rightMax, height[r]);
     }
-    return ans;
+    return res;
   }
 };
